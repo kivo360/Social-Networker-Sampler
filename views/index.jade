@@ -1,0 +1,71 @@
+extends layout
+
+block content
+  h1 Upload File
+    hr
+    form(method="POST", action="/addUpload", enctype="multipart/form-data")
+      input(type="file", name="file")
+      input(type="submit")
+  h1 Login Validation
+    hr
+    form(method="POST", action="/login")
+      label(for="phone") Phone Number
+      input(type="number", name="phone")
+      br
+      label(for="password") Password
+      input(type="password", name="password")
+      br
+      label(for="passwordHash") Password Hash
+      input(type="text", name="passwordHash")
+      br
+      input(type="submit")
+  h1 Register Validation
+    hr
+    form(method="POST", action="/register")
+      label(for="phone") Phone Number
+      input(type="number", name="phone")
+      br
+      label(for="password") Password
+      input(type="password", name="password")
+      br
+      label(for="confirmPassword") Confirm
+      input(type="password", name="confirmPassword")
+      br
+      br
+      label(for="fname") First Name
+      input(type="text", name="fname")
+      br
+      label(for="lname") Last Name
+      input(type="text", name="lname")
+      input(type="submit")
+  h1 Add Comment
+    hr
+    form(method="POST", action="/addComment")
+      label(for="itemId") Item
+      input(type="number", name="itemId")
+      br
+      label(for="comment") Comment
+      input(type="text", name="comment")
+      input(type="submit")
+      br
+  h1 Add Friend
+    hr
+    form(method="POST", action="/addFriend")
+      label(for="personId1") Person-1
+      input(type="number", name="personId1")
+      br
+      label(for="personId2") Person-2
+      input(type="number", name="personId2")
+      br
+      input(type="submit")
+
+  h1 Add Like
+    hr
+    form(method="POST", action="/addLike")
+      label(for="personId") Person
+      input(type="number", name="personId")
+      br
+      label(for="itemId") Item
+      input(type="number", name="itemId")
+      br
+      input(type="submit")

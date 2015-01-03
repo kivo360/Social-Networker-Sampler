@@ -1,0 +1,12 @@
+extends layout
+block content
+   h1 Login Validation
+      hr
+      form(method="POST", action="/login")
+         label(for="phones") Phone
+         input(type="number", name="phones")
+         br
+         label(for="password") Password
+         input(type="password", name="password")
+         br
+         input(type="submit")
