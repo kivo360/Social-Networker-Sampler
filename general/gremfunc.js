@@ -94,6 +94,8 @@ var RemoveStuff = function (queryObj, cb) {
 
 
 
+
+
 var runQuery = function (query, cb) {
     client.execute(query, function(err, response) {
         //console.log(response);
@@ -101,6 +103,34 @@ var runQuery = function (query, cb) {
     });
 };
 
+var findId = function (id, cb) {
+    var query = gremlin(g.v(id));
+    runQuery(query, function (err, res) {
+        cb(err, res);
+    });
+};
+
+var checkType = function (id, type, cb) {
+    var query = gremlin(g.v(id));
+    runQuery(query, function (err, res) {
+        var person = {};
+        console.log(res);
+        if(err){
+            return cb(err, "nill");
+        } else if(!Boolean(res.results)){
+            return cb(new Error("Nothing Under Id Exist"), "nill");
+        }else{
+            person = res.results[0];
+        }
+
+        // Check for a the given type Now
+        if(person.type !== type){
+            return cb(err, false);
+        }else{
+            return cb(err, true);
+        }
+    });
+};
 
 
 /***
@@ -120,12 +150,14 @@ var isExist = function (queryObj, query, cb) {
                     return;
                 }
                 runQuery(query, function (err, resu) {
+                    console.log(resu);
                     callback(null, resu.results);
                 });
             }
             else{
                 vertexQuery(queryObj, function (err, resu) {
                     if(!isTruthy(resu.results)){
+                        console.log(resu);
                         callback(null, "");
                     }
                     callback(null, resu.results);
@@ -135,6 +167,7 @@ var isExist = function (queryObj, query, cb) {
         },
         function (resp, callback) {
             // Callback a boolean value
+            console.log(resp)
             var boolValue = Boolean(resp[0]); //Check if the array is empty
 
             callback(null, boolValue);
@@ -170,7 +203,6 @@ var easyRel = function (value1, value2, relType, cb) {
 
 function createUser(){
     var query = gremlin();
-
     var userObject = {fname:"Kevin", lname: "Hill", uname: "kivo360", password: "haswqwkw12h2aklgsulabsqg", type:"person"};
     query(g.addVertex(userObject));
     runQuery(query, function (err, result) {
@@ -188,12 +220,17 @@ function createUser(){
 
 var Create = function (createdObj, cb) {
     var query = gremlin();
-    query(g.addVertex(createdObj));
-    runQuery(query, function (err, result) {
-        //if(err) throw err;
+    if((!isObject(createdObj) && !isTruthy(createdObj))){
+        return cb(new Error("The query object is not valid"), "");
+    }else{
+        query(g.addVertex(createdObj));
+        runQuery(query, function (err, result) {
+            //if(err) throw err;
 
-        return cb(err, result);
-    });
+            return cb(err, result);
+        });
+    }
+
 };
 
 
@@ -251,6 +288,7 @@ function removeGraph(){
     ]);
 }
 
+var remove = Number.prototype.Remove
 
 // Export all of the functions for use
 module.exports = {
@@ -265,5 +303,7 @@ module.exports = {
         all: removeGraph
     },
     create: Create,
-    run: runQuery
+    run: runQuery,
+    findById: findId,
+    type: checkType
 };

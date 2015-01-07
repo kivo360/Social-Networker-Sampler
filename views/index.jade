@@ -3,7 +3,7 @@ extends layout
 block content
   h1 Upload File
     hr
-    form(method="POST", action="/addUpload", enctype="multipart/form-data")
+    form(method="POST", action="/newVideo", enctype="multipart/form-data")
       input(type="file", name="file")
       input(type="submit")
   h1 Login Validation
@@ -14,9 +14,6 @@ block content
       br
       label(for="password") Password
       input(type="password", name="password")
-      br
-      label(for="passwordHash") Password Hash
-      input(type="text", name="passwordHash")
       br
       input(type="submit")
   h1 Register Validation
@@ -51,10 +48,7 @@ block content
   h1 Add Friend
     hr
     form(method="POST", action="/addFriend")
-      label(for="personId1") Person-1
-      input(type="number", name="personId1")
-      br
-      label(for="personId2") Person-2
+      label(for="personId2") Person-2 Hint: 12800256
       input(type="number", name="personId2")
       br
       input(type="submit")

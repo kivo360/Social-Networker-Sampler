@@ -43,11 +43,18 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.set('port', process.env.PORT || 3000);
-app.use(expressValidator());
+app.use(expressValidator({
+    customValidators: {
+        isArray: function(value) {
+            return Array.isArray(value);
+        }
+    }
+}));
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {maxAge: 86400000}
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -65,6 +72,7 @@ app.get('/', function (req, res) {
     res.render("index");
 });
 
+// Basic User Information
 app.get('/login', function (req, res) {
    res.render('login', {title: 'Login'});
 });
@@ -79,13 +87,29 @@ app.get('/user', function (req, res) {
 });
 app.post('/login', user.postLogin);
 app.post('/register', user.postRegister);
+
+// Creating Stuff
 app.post('/addComment', user.postAddComment);
-app.post('/addUpload',fm.uploadFile);
 app.post('/addFriend', user.postFriendUser);
 app.post('/addLike', user.postAddLike);
-app.get('/userInfo', function (req, res) {
 
+//Video Work
+app.post('/newVideo', fm.addNewVideo);
+// app.post('/addVideo', fm.addVideo);
+// app.post('/downloadVideo', fm.downloadVideo);
+// app.post('/getVideosByPost', fm.downloadVideo);
+
+// 'Get' User Commands
+// app.post('/getPostByUser', user.postByUser);
+// app.post('/getFriends', user.getFriends);
+// app.post('/getComments', user.getFriends);
+// app.post('/getLikers', user.getFriends);
+app.get('/userInfo', function (req, res) {
    res.json({user: req.user});
+});
+
+app.get('/arrayTest', function (req, res) {
+    res.json({respond: req.param('test')});
 });
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
