@@ -20,7 +20,7 @@ var fileio = require('./../general/file_management')
 //TODO: Add the metadata for each file
 exports.addNewVideo = function (req, res) {
     //req.assert('videoTags', 'Not an array').notEmpty();
-    //req.assert('post_comment', 'This is empty').notEmpty();
+    req.assert('post_comment', 'This is empty. Should Not Be Empty').notEmpty();
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
@@ -34,6 +34,7 @@ exports.addNewVideo = function (req, res) {
         return res.redirect('/login');
     }
 
+    var post_comment = req.param('post_comment');
     var typeCheck = fileio.fileCheck(uploadedFile.name, ['mp4']) && fileio.mimeCheck(uploadedFile.mimetype, 'video/mp4');
     //Does the file meet validation?
     if(!typeCheck){
@@ -47,7 +48,7 @@ exports.addNewVideo = function (req, res) {
                 // Uploading the file
                 fileio.upload(uploadedFile, function (err, result) {
                     if(err){
-                        res.json({message: "The file could not be uploaded."})
+                       return res.json({message: "The file could not be uploaded."})
                     }
                     else{
                         callback(null, result);
@@ -59,38 +60,44 @@ exports.addNewVideo = function (req, res) {
                 // Will likely need to add name here
                 var post_model = {
                     createdTime: new Date().valueOf(),
-                    postComment: ""
+                    postComment: post_comment,
+                    type: "post"
                 };
 
                 gremtool.create(post_model, function(err, result){
                     if(err){
-                        return res.json({message: "Error, We couldn't upload the video"})
+                        return res.json({message: "Error, We couldn't upload the video. Post Not Created"})
                     }
                     callback(null, result.results[0])
                 });
             },
             create_video_group: function(callback){
                 var video_group_model = {
-                    createdTime: new Date().valueOf()
+                    createdTime: new Date().valueOf(),
+                    type: "video_group"
                 };
                 gremtool.create(video_group_model, function(err, result){
                     if(err){
-                        return res.json({message: "Error, We couldn't upload the video"})
+                        return res.json({message: "Error, We couldn't upload the video. Video Group Not Created"})
                     }
                     callback(null, result.results[0])
                 });
 
             },
             add_video_node: ['create_video_group', 'upload_video_file', function (callback, results) {
+
+                console.log(results.upload_video_file);
                 var video_model = {
                     createdTime: new Date().valueOf(),
-                    length: results.upload_video_file.length,
-                    videoId: results.upload_video_file._id
+                    video_length: results.upload_video_file.length,
+                    videoId: results.upload_video_file._id,
+                    type: "video"
                 };
-
+                console.log(video_model);
                 gremtool.create(video_model, function(err, result){
                     if(err){
-                        return res.json({message: "Error, We couldn't upload the video"})
+                        console.log(err);
+                        return res.json({message: "Error, We couldn't upload the video. Video Node Not Added"})
                     }
                     callback(null, result.results[0])
                 });
@@ -98,7 +105,7 @@ exports.addNewVideo = function (req, res) {
             }],
             user_to_video: ['add_video_node', function (callback, results) {
                 // Link the user to the video 'created'
-                var videoId = results.add_video_node;
+                var videoId = results.add_video_node._id;
                 var userId = req.user.userId;
                 gremtool.rel(userId, videoId, "recorded", function (err, result) {
                     if(err){
@@ -165,7 +172,7 @@ exports.addNewVideo = function (req, res) {
 };
 
 exports.downloadVideo = function (req, res) {
-    res.json({message: "This is to download the video"});
+    return res.json({message: "This is to download the video"});
 };
 
 

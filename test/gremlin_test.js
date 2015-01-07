@@ -39,5 +39,17 @@ var createUser = function () {
     //});
 };
 
+//var video = {
+//    //createdTime: 1420617405862,
+//    length: 832221,
+//    videoId: '54ace6bd13663723744514ac',
+//    type: "video"
+//};
 
-createUser();
+gremtool.create({createdTime: 1234, video_length: 832221, type: "video"}, function (err, result) {
+   console.log(result);
+});
+
+//gremtool.create(video, function (err, result) {
+//   console.log(result);
+//});

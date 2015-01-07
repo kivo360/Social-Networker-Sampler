@@ -40,33 +40,29 @@ var uploadFileEss = function (uploadedFile, cb) {
     });
 };
 
-var downloadFileEss = function (fileUUID, responseHeader, cb){
+var downloadFileEss = function (fileUUID, responseHeader){
     db.open(function (err) {
         var gfs = Grid(db);
-        var rs = gfs.createWriteStream({
-            filename: uploadedFile.name,
-            mode: 'w',
-            content_type: uploadedFile.mimetype
-        });
+        var options = {
+            _id: fileUUID
+        };
 
-        //This is where the file is closed
-        ws.on('close', function (file) {
-            db.close();
-            fs.unlink(uploadedFile.path, function (err) {
-                if (err) throw err;
-                cb(err, file);
-            });
+        var rs = gfs.createReadStream(options);
 
-        });
-
-        ws.on('error', function (err) {
+        rs.on('error', function (err) {
             db.close();
             fs.unlink(uploadedFile.path, function (e) {
                 if (e) throw e;
-                cb(err, "nill");
             });
         });
-        fs.createReadStream(uploadedFile.path).pipe(ws);
+
+        gfs.exist(options, function (err, found) {
+            if (err) return handleError(err);
+            found ? rs.pipe(responseHeader) : console.log('File does not exist');
+        });
+
+
+
     });
 };
 

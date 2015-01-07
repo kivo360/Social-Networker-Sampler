@@ -96,7 +96,7 @@ app.post('/addLike', user.postAddLike);
 //Video Work
 app.post('/newVideo', fm.addNewVideo);
 // app.post('/addVideo', fm.addVideo);
-// app.post('/downloadVideo', fm.downloadVideo);
+app.post('/downloadVideo', fm.downloadVideo);
 // app.post('/getVideosByPost', fm.downloadVideo);
 
 // 'Get' User Commands
@@ -104,6 +104,11 @@ app.post('/newVideo', fm.addNewVideo);
 // app.post('/getFriends', user.getFriends);
 // app.post('/getComments', user.getFriends);
 // app.post('/getLikers', user.getFriends);
+
+//Timeline stuff
+// app.post('/getTimeline', user.getTimeline);
+
+//Test Stuff
 app.get('/userInfo', function (req, res) {
    res.json({user: req.user});
 });
@@ -111,6 +116,9 @@ app.get('/userInfo', function (req, res) {
 app.get('/arrayTest', function (req, res) {
     res.json({respond: req.param('test')});
 });
+
+
+
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');

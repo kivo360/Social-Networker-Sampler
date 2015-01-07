@@ -4,7 +4,11 @@ block content
   h1 Upload File
     hr
     form(method="POST", action="/newVideo", enctype="multipart/form-data")
+      label(for="post_comment") Post Comment
+      input(type="text", name="post_comment")
+      br
       input(type="file", name="file")
+      br
       input(type="submit")
   h1 Login Validation
     hr
