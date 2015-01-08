@@ -10,12 +10,10 @@
     var gremtool = require('./../general/gremfunc');
     var async = require('async');
     var social = require('./../config/socialqueries');
-/**
- * MongoDb Stuff
- */
+    var uuid = require('node-uuid');
 
 
-var fileio = require('./../general/file_management')
+var fileio = require('./../general/file_management');
 
 //TODO: Add the metadata for each file
 exports.addNewVideo = function (req, res) {
@@ -46,7 +44,7 @@ exports.addNewVideo = function (req, res) {
     async.auto({
             upload_video_file: function (callback) {
                 // Uploading the file
-                fileio.upload(uploadedFile, function (err, result) {
+                fileio.upload(uploadedFile, 'mp4', function (err, result) {
                     if(err){
                        return res.json({message: "The file could not be uploaded."})
                     }
@@ -89,8 +87,7 @@ exports.addNewVideo = function (req, res) {
                 console.log(results.upload_video_file);
                 var video_model = {
                     createdTime: new Date().valueOf(),
-                    video_length: results.upload_video_file.length,
-                    videoId: results.upload_video_file._id,
+                    videoId: results.upload_video_file._id.toString(),
                     type: "video"
                 };
                 console.log(video_model);
@@ -164,28 +161,117 @@ exports.addNewVideo = function (req, res) {
             }]
 
         }, function (err, results) {
-            return res.json({message: "Successfully Added Video", videoId: results.add_video_node._id});
+            return res.json({message: "Successfully Added Video", videoNode: results.add_video_node, postNode: results.create_post});
         }
     );
 
 
 };
 
-exports.downloadVideo = function (req, res) {
-    return res.json({message: "This is to download the video"});
+exports.addVideo = function (req, res) {
+    req.assert('video_group', 'This is empty. Should Not Be Empty').isNumber().notEmpty();
+    var errors = req.validationErrors();
+    if(errors){
+        return res.json({message: "One of your inputs is not correct.", err: errors});
+    }
+
+    var uploadedFile = req.files.file;
+    // Check for video file & user
+    if(uploadedFile === undefined){
+        res.json({message: "You didn\'t add a file"});
+    }if(req.session.passport.user === undefined){
+        return res.redirect('/login');
+    }
+
+    var vgId = req.param('video_group');
+
+    async.auto({
+            upload_video_file: function (callback) {
+                // Uploading the file
+                fileio.upload(uploadedFile, 'mp4', function (err, result) {
+                    if(err){
+                        return res.json({message: "The file could not be uploaded."})
+                    }
+                    else{
+                        callback(null, result);
+                    }
+                });
+            },
+            add_video_node: ['upload_video_file', function (callback, results) {
+
+                var video_model = {
+                    createdTime: new Date().valueOf(),
+                    videoId: results.upload_video_file._id,
+                    type: "video"
+                };
+
+                gremtool.create(video_model, function(err, result){
+                    if(err){
+                        console.log(err);
+                        return res.json({message: "Error, We couldn't upload the video. Video Node Not Added"})
+                    }
+                    callback(null, result.results[0])
+                });
+
+            }],
+            user_to_video: ['add_video_node', function (callback, results) {
+                // Link the user to the video 'created'
+                var videoId = results.add_video_node._id;
+                var userId = req.user.userId;
+                gremtool.rel(userId, videoId, "recorded", function (err, result) {
+                    if(err){
+                        console.log(err);
+                        return res.json({message: "Cant be a video of the group supplied."});
+                    }
+                    callback(null, "success");
+                });
+            }],
+            video_to_video_group: ['add_video_node', function (callback, results) {
+                // Connect the video_group to the video'
+                // TODO: date timestamp (milliseconds) to sequence each video.
+                var videoId = results.add_video_node._id;
+
+                gremtool.rel(videoId, vgId, "apartof", function (err, result) {
+                    if(err){
+                        console.log(err);
+                        return res.json({message: "Cant be a video of the group supplied."});
+                    }
+                    callback(null, "success");
+                });
+            }]
+        }, function (err, results) {
+            return res.json({message: "Successfully Added Video", videoNode: results.add_video_node, postNode: results.create_post, vg_id: results.create_video_group._id});
+        }
+    );
+
 };
 
 
+// To test download -- '6ebabcc2-737f-47e9-951f-232bdc15f71e.mp4'
+exports.downloadVideo = function (req, res) {
+    req.assert('video_id', 'Video Id is empty. Should Not Be Empty').notEmpty();
+    var errors = req.validationErrors();
+    if(errors){
+        return res.json({message: "One of your inputs is not correct.", err: errors});
+    }
 
-// Mongo Storage Model
-/**
- * {
-                _id: "54acabf09b8345244c400b6d",
-                filename: "88c7b3dc859c03cca58c523ca4256503.mp4",
-                contentType: "video/mp4",
-                length: 832221,
-                chunkSize: 261120,
-                uploadDate: "2015-01-07T03:45:52.914Z",
-                md5: "1bc12166f2f5d460c1ee9012b7dec0e3"
-                }
- */
+    var v_id = req.param('video_id');
+
+    // Begin download here
+    fileio.download(v_id, function (err, local) {
+        res.download(local, function (err) {
+            if(err){
+                console.log(err);
+                fileio.fs.unlink(local, function(err, result){
+                    console.log("The file was deleted ");
+                    return res.json('The file sucks wasn\'t downloaded' )
+                })
+            }else{
+                fileio.fs.unlink(local, function(err, result){
+                    console.log("The file was deleted");
+                })
+            }
+        })
+    });
+
+};

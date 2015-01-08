@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  h1 Upload File
+  h1 Upload Video
     hr
     form(method="POST", action="/newVideo", enctype="multipart/form-data")
       label(for="post_comment") Post Comment
@@ -65,5 +65,18 @@ block content
       br
       label(for="itemId") Item
       input(type="number", name="itemId")
+      br
+      input(type="submit")
+      hr
+  h1 Download Video
+    form(method="POST", action="/downloadVideo")
+      label(for="video_id") VideoId
+      input(type="text", name="video_id")
+      br
+      input(type="submit")
+  h1 Add Video
+    form(method="POST", action="/downloadVideo")
+      label(for="video_id") VideoId
+      input(type="text", name="video_id")
       br
       input(type="submit")

@@ -45,34 +45,34 @@ exports.postRegister = function (req, res) {
 
 
     async.waterfall([
-        // Check for existence first
-        function (callback) {
-            gremtool.exist({phone: req.param('phone'), type: "person"}, "", function (err, result) {
-                callback(null, result);
-            });
-        },
-        function (exist, callback) {
-            // If this person doesn't exist create an object of them
-            console.log("Does the user exist? ", exist);
-            if(!exist){
-                UserObjCreator(req.param('phone'), req.param('password'), req.param('fname'), req.param('lname'), function (result) {
-                    callback(null, result)
-                });
-            }else{
-                callback(null, false);
-            }
-        },
-        function (user, callback) {
-            console.log(user);
-            if(!user){
-                callback(null, {message: "The User With The Number " + req.param('phone') + " Already Exist"})
-            }
-            //callback(null, user);
-            gremtool.create(user, function (err, use) {
-                console.log(use)
-                callback(null, use);
-            });
-        }
+                // Check for existence first
+                function (callback) {
+                    gremtool.exist({phone: req.param('phone'), type: "person"}, "", function (err, result) {
+                        callback(null, result);
+                    });
+                },
+                function (exist, callback) {
+                    // If this person doesn't exist create an object of them
+                    console.log("Does the user exist? ", exist);
+                    if(!exist){
+                        UserObjCreator(req.param('phone'), req.param('password'), req.param('fname'), req.param('lname'), function (result) {
+                            callback(null, result)
+                        });
+                    }else{
+                        callback(null, false);
+                    }
+                },
+                function (user, callback) {
+                    console.log(user);
+                    if(!user){
+                        callback(null, {message: "The User With The Number " + req.param('phone') + " Already Exist"})
+                    }
+                    //callback(null, user);
+                    gremtool.create(user, function (err, use) {
+                        console.log(use)
+                        callback(null, use);
+                    });
+                }
     ], function (err, result) {
         res.json(result);
     });
@@ -94,12 +94,6 @@ exports.postAddComment = function (req, res) {
     }
     var itemId = req.param('itemId');
     var commentText = req.param('comment');
-
-    // Comment Information
-        // Check for itemId, look at the session for userId
-        // connect the item from the itemId to the the person
-        // Connect the itemId to the person (commented)
-        // The comment will have the date (timestamp), username, and the entire comment
 
 
     async.auto({
@@ -172,38 +166,34 @@ exports.postFriendUser = function (req, res) {
 
     var newFriend = req.param('personId2');
 
-    // Check for personId2, look at the session for userId
-    // Connect the two friends together if the validation is passed
-    // The link will have a timestamp, and a weight of 0.5
 
     async.auto({
-        check_person: function (callback) {
-            gremtool.type(newFriend, 'person', function (err, resu) {
-                console.log(resu);
-                if( resu == "nill"){
-                    return res.json({message: "The person you\'re trying to friend doesn\'t exist."})
-                }
-                callback(null, resu);
-            });
-        },
-        add_friend: ['check_person', function (callback, resu) {
+                check_person: function (callback) {
+                    gremtool.type(newFriend, 'person', function (err, resu) {
+                        console.log(resu);
+                        if( resu == "nill"){
+                            return res.json({message: "The person you\'re trying to friend doesn\'t exist."})
+                        }
+                        callback(null, resu);
+                    });
+                },
+                add_friend: ['check_person', function (callback, resu) {
 
 
-            // If false
-            if(resu.check_person){
-                gremtool.rel(req.user.userId, newFriend, "friend", function (err, result) {
-                    if(err){
-                        console.log(err);
-                        return res.json({message: "Sorry, you can\'t be friends."});
+                    // If false
+                    if(resu.check_person){
+                        gremtool.rel(req.user.userId, newFriend, "friend", function (err, result) {
+                            if(err){
+                                console.log(err);
+                                return res.json({message: "Sorry, you can\'t be friends."});
+                            }
+                            callback(null, "success");
+                        });
+                    }else{
+                        return res.json({message: "Sorry, you can\'t be friends with something that\'s not a person."})
                     }
-                    callback(null, "success");
-                });
-            }else{
-                return res.json({message: "Sorry, you can\'t be friends with something that\'s not a person."})
-            }
 
-        }]
-
+                }]
     }, function (err, result) {
         if(err){
             return res.json({message: "Sorry, you can\'t be friends."})
@@ -227,12 +217,6 @@ exports.postAddLike = function (req, res) {
 
     var itemId = req.param('itemId');
 
-
-    // async.waterfall
-        // Check for itemId, look at the session for userId
-        // Validate to see if the itemId is not a user. Users can only be friend-ed.
-        // Connect the person to the item w/ itemId
-        // The comment will have the date (timestamp "for queries"), username
 
     async.auto({
                 check_person: function (callback) {
@@ -261,14 +245,12 @@ exports.postAddLike = function (req, res) {
                     }
 
                 }]
-
     }, function (err, result) {
         if(err){
             return res.json({message: "You can\'t like that"})
         }
         return res.json({message: "You have liked that item."});
     });
-
 };
 
 
@@ -331,7 +313,7 @@ exports.postGetComments = function (req, res) {
     var item = req.param('itemId');
 
     async.auto({
-                // Validate to see if the vertex is a person
+                // Validate to see if the vertex is a person (commentOf)
                 check_person: function (callback) {
                     gremtool.checkType(p_id, "person", function (err, result) {
                         if(err){
@@ -350,10 +332,8 @@ exports.postGetComments = function (req, res) {
                         }else{
                             return res.json({message: "Error: Not A User"})
                         }
-                    }
-                ]
+                    }]
     });
-    res.json({message: "The Input Works!!!"});
 };
 
 /*
@@ -374,162 +354,30 @@ exports.postGetLikers = function (req, res) {
 
 
     async.auto({
-        // Validate to see if the vertex is a person
-        check_person: function (callback) {
-            gremtool.checkType(item, "person", function (err, result) {
-                if(err){
-                    return res.json({message: "Something went wrong", error: err});
-                }
-                else{
-                    callback(null, result)
-                }
-            });
-        },
-        get_likers: ['check_person', function (callback, resu) {
-            if(!resu.check_person){
-                gremtool.run(social.get_likers(item), function (err, likers) {
-                    return res.json({likes: likers.results});
-                });
-            }else{
-                return res.json({message: "Error: Not A User"})
-            }
-        }
-        ]
+                // Validate to see if the vertex is a person
+                check_person: function (callback) {
+                    gremtool.checkType(item, "person", function (err, result) {
+                        if(err){
+                            return res.json({message: "Something went wrong", error: err});
+                        }
+                        else{
+                            callback(null, result)
+                        }
+                    });
+                },
+                get_likers: ['check_person', function (callback, resu) {
+                    if(!resu.check_person){
+                        gremtool.run(social.get_likers(item), function (err, likers) {
+                            return res.json({likes: likers.results});
+                        });
+                    }else{
+                        return res.json({message: "Error: Not A User"})
+                    }
+                }]
     });
-
-
-    //res.json({message: "The Input Works!!!"});
 };
 
 
-exports.newVideo = function (req, res) {
-    // Check for userId
-    req.assert('videoTags', 'Not an array').isArray();
-    var errors = req.validationErrors();
-    if(errors){
-        return res.json({message: "One of your inputs is not correct.", err: errors});
-    }
-
-    var uploadedFile = req.files.file;
-    // Check for video file
-    if(uploadedFile === undefined){
-        res.json({message: "You didn\'t add a file"});
-    }if(req.session.passport.user === undefined){
-        return res.redirect('/login');
-    }
-
-
-    // Check For Meta Tags
-    // Check post info
-        // Post Comment (300)
-        // Get date
-        // new Date().
-
-
-
-
-
-    // TODO: Offload this into separate file after for refactor
-    //async.auto({
-    //        upload_video_file: function (callback) {
-    //            // Uploading the file
-    //            console.log("upload the video file");
-    //            callback(null, 'video_file');
-    //        },
-    //        create_post: function (callback) {
-    //            console.log("Create Post About Stuff");
-    //            callback(null, 'Add Post');
-    //        },
-    //        check_for_user: function (callback) {
-    //            callback(null, 'user does exist || doesn\'t exist');
-    //        },
-    //        create_video_group: function(callback){
-    //            callback(null, 'video_group')
-    //        },
-    //        add_video_node: ['create_video_group', 'upload_video_file', function (callback, results) {
-    //            console.log("Creating the video");
-    //            callback(null, 'video_node');
-    //        }],
-    //        video_to_user: ['add_video_node', function (callback, results) {
-    //            // Link the user to the video 'created'
-    //            callback(null, 'link_id');
-    //        }],
-    //        video_to_video_group: ['add_video_node', function (callback, results) {
-    //            // Connect the video_group to the video'
-    //            // TODO: date timestamp (milliseconds) to sequence each video.
-    //            console.log("Linking video to video_group");
-    //            callback(null, 'isDone');
-    //        }],
-    //        post_to_user: ['create_post', 'check_for_user', function (callback, results) {
-    //            // Connect the user and post together
-    //            callback(null, 'isDone');
-    //        }],
-    //        video_group_to_post: ['create_post', 'create_video_group', function (callback, results) {
-    //            callback(null, 'isDone');
-    //        }]
-    //
-    //    }, function (err, results) {
-    //        console.log("Err: ", err);
-    //        console.log('results = ', results);
-    //    }
-    //);
-};
-
-exports.addVideo = function (req, res) {
-    // Check For PostId
-    // Check For VideoFile
-    // Check For Meta Tags
-
-    async.auto({
-        upload_video_file: function (callback) {
-            // Uploading the file
-            console.log("upload the video file");
-            callback(null, 'video_file');
-        },
-        create_post: function (callback) {
-            console.log("Create Post About Stuff");
-            callback(null, 'Add Post');
-        },
-        check_for_user: function (callback) {
-            callback(null, 'user does exist || doesn\'t exist');
-        },
-        create_video_group: function(callback){
-            callback(null, 'video_group')
-        },
-        add_video_node: ['create_video_group', 'upload_video_file', function (callback, results) {
-            console.log("Creating the video");
-            callback(null, 'video_node');
-        }],
-        video_to_user: ['add_video_node', function (callback, results) {
-            // Link the user to the video 'created'
-            callback(null, 'link_id');
-        }],
-        video_to_video_group: ['add_video_node', function (callback, results) {
-            // Connect the video_group to the video'
-            // TODO: date timestamp (milliseconds) to sequence each video.
-            console.log("Linking video to video_group");
-            callback(null, 'isDone');
-        }],
-        post_to_user: ['create_post', 'check_for_user', function (callback, results) {
-            // Connect the user and post together
-            callback(null, 'isDone');
-        }],
-        video_group_to_post: ['create_post', 'create_video_group', function (callback, results) {
-            callback(null, 'isDone');
-        }]
-
-    }, function (err, results) {
-        console.log("Err: ", err);
-        console.log('results = ', results);
-    });
-    // Upload Video
-        // if:yes Create Video Vertex
-            // if:yes Link Video vertex and video_group_by_post
-                // if:yes return a Success Message
-            // if:no return error message(json)
-        // if:no return error message(json)
-
-};
 
 var UserObjCreator = function (phone, pword, fname, lname, cb) {
     bcrypt.hash(pword, 10, function(err, hash) {

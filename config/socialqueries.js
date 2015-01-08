@@ -18,8 +18,7 @@ var _ = grex._;
 module.exports = {
     get_friends: function (id) {
         // Check type
-        var query = gremlin(g.v(id).both('friends'));
-
+        var query = gremlin(g.v(id).and(_().out("friend"), _().out('friend').out("friend")));
         return query;
     },
     get_likers: function (id) {
@@ -35,12 +34,12 @@ module.exports = {
     },
     get_comments: function (id) {
         // Check type: can't be user
-        var query = gremlin(g.v(id).in('comment'));
+        var query = gremlin(g.v(id).in('commentof'));
         return query;
     },
-    comments_by_user: function (id) {
+    comments_by_user: function (userid) {
         // Check type: must be user
-        var query = gremlin(g.v(id).out('comment'));
+        var query = gremlin(g.v(userid).out('commented'));
         return query;
     },
     post_by_user: function (id) {
@@ -62,6 +61,11 @@ module.exports = {
         // From Post gets the video_group, then videos, then users from the videos
         var query = gremlin();
         query(g.v(id).out('video_group').out('video').out('created'));
+        return query;
+    },
+    get_videos_by_post: function (postId) {
+        var query = gremlin();
+        query(g.v(postId).in('vg_of').in('apartof'))
         return query;
     }
 
