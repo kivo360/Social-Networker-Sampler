@@ -3,6 +3,7 @@ var async = require('async');
 var bcrypt = require('bcrypt');
 var passport = require('./../config/passport');
 var social = require('./../config/socialqueries');
+var _ = require('lodash');
 
 exports.postLogin = function (req, res, next) {
     req.assert('phones', 'Not a phone number').len(7, 11).isInt();
@@ -30,6 +31,9 @@ exports.postLogin = function (req, res, next) {
     //console.log("Logging In");
 
 };
+
+
+
 
 exports.postRegister = function (req, res) {
     req.assert('phone', 'Not a phone number').notEmpty();
@@ -100,7 +104,7 @@ exports.postAddComment = function (req, res) {
             check_item: function (callback) {
                 gremtool.type(itemId, 'person', function (err, resu) {
                     console.log(resu);
-                    if( resu == "nill"){
+                    if( resu.result == "nill"){
                         return res.json({message: "The item you are trying to comment on doesn\'t exist."})
                     }
                     callback(null, resu);
@@ -114,7 +118,7 @@ exports.postAddComment = function (req, res) {
                 };
 
                 // If false
-                if(!resu.check_item){
+                if(!resu.check_item.tval){
                     gremtool.create(comment, function (err, resu2) {
                         if(err){
                             return res.json({message: "We couldn\'t add the comment"})
@@ -173,19 +177,20 @@ exports.postFriendUser = function (req, res) {
                         console.log(resu);
                         if( resu == "nill"){
                             return res.json({message: "The person you\'re trying to friend doesn\'t exist."})
+                        }else{
+                            callback(null, resu);
                         }
-                        callback(null, resu);
+
                     });
                 },
                 add_friend: ['check_person', function (callback, resu) {
 
-
                     // If false
-                    if(resu.check_person){
+                    if(resu.check_person.tval){
                         gremtool.rel(req.user.userId, newFriend, "friend", function (err, result) {
                             if(err){
                                 console.log(err);
-                                return res.json({message: "Sorry, you can\'t be friends."});
+                                return res.json({message: "Sorry, you can\'t be friends. "});
                             }
                             callback(null, "success");
                         });
@@ -198,7 +203,7 @@ exports.postFriendUser = function (req, res) {
         if(err){
             return res.json({message: "Sorry, you can\'t be friends."})
         }
-        return res.json({message: "You are now friends."});
+        return res.json({message: "You are now friends.", friendInfo: result.check_person.result});
     });
 };
 
@@ -221,7 +226,6 @@ exports.postAddLike = function (req, res) {
     async.auto({
                 check_person: function (callback) {
                     gremtool.type(itemId, 'person', function (err, resu) {
-                        console.log(resu);
                         if( resu == "nill"){
                             return res.json({message: "The person you\'re trying to friend doesn\'t exist."})
                         }
@@ -232,7 +236,7 @@ exports.postAddLike = function (req, res) {
 
 
                     // If false
-                    if(!resu.check_person){
+                    if(!resu.check_person.tval){
                         gremtool.rel(req.user.userId, itemId, "like", function (err, result) {
                             if(err){
                                 console.log(err);
@@ -263,16 +267,17 @@ exports.postGetFriends = function (req, res) {
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
-    }else if(req.session.passport.user === undefined){
-        return res.redirect('/login');
     }
+    //else if(req.session.passport.user === undefined){
+    //    return res.redirect('/login');
+    //}
 
     var p_id = req.param('personId');
 
     async.auto({
                 // Validate to see if the vertex is a person
                 check_person: function (callback) {
-                    gremtool.checkType(p_id, "person", function (err, result) {
+                    gremtool.type(p_id, "person", function (err, result) {
                         if(err){
                             return res.json({message: "Something went wrong", error: err});
                         }
@@ -282,9 +287,10 @@ exports.postGetFriends = function (req, res) {
                     });
                 },
                 get_friends: ['check_person', function (callback, resu) {
-                        if(resu.check_person){
-                            gremtool.run(social.get_friends(p_id), function (err, friends) {
-                                return res.json({friendList: friends.results[0]});
+                    //console.log(resu.check_person.tval);
+                    if(resu.check_person.tval){
+                            gremtool.run(social.User.get_friends(p_id), function (err, friends) {
+                                return res.json({friendList: friends.results});
                             });
                         }else{
                             return res.json({message: "Error: Not A User"})
@@ -315,7 +321,7 @@ exports.postGetComments = function (req, res) {
     async.auto({
                 // Validate to see if the vertex is a person (commentOf)
                 check_person: function (callback) {
-                    gremtool.checkType(p_id, "person", function (err, result) {
+                    gremtool.type(item, "person", function (err, result) {
                         if(err){
                             return res.json({message: "Something went wrong", error: err});
                         }
@@ -325,7 +331,7 @@ exports.postGetComments = function (req, res) {
                     });
                 },
                 get_comments: ['check_person', function (callback, resu) {
-                        if(!resu.check_person){
+                        if(!resu.check_person.tval){
                             gremtool.run(social.get_comments(item), function (err, comments) {
                                 return res.json({friendList: comments.results});
                             });
@@ -356,7 +362,7 @@ exports.postGetLikers = function (req, res) {
     async.auto({
                 // Validate to see if the vertex is a person
                 check_person: function (callback) {
-                    gremtool.checkType(item, "person", function (err, result) {
+                    gremtool.type(item, "person", function (err, result) {
                         if(err){
                             return res.json({message: "Something went wrong", error: err});
                         }
@@ -366,7 +372,7 @@ exports.postGetLikers = function (req, res) {
                     });
                 },
                 get_likers: ['check_person', function (callback, resu) {
-                    if(!resu.check_person){
+                    if(!resu.check_person.tval){
                         gremtool.run(social.get_likers(item), function (err, likers) {
                             return res.json({likes: likers.results});
                         });
@@ -376,6 +382,22 @@ exports.postGetLikers = function (req, res) {
                 }]
     });
 };
+
+
+
+exports.getContributers = function (req, res) {
+    // Send in post id
+    // check for postId
+        // if false
+            // return Sorry, Not a post
+    // run get contributer query
+        // if err
+            // Sorry, there was an error on our end, we'll fix it
+        // else
+            // respond, results
+};
+
+
 
 
 

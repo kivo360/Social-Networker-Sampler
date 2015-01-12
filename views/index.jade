@@ -69,14 +69,49 @@ block content
       input(type="submit")
       hr
   h1 Download Video
+    hr
     form(method="POST", action="/downloadVideo")
       label(for="video_id") VideoId
       input(type="text", name="video_id")
       br
       input(type="submit")
+      hr
   h1 Add Video
-    form(method="POST", action="/downloadVideo")
-      label(for="video_id") VideoId
-      input(type="text", name="video_id")
+    hr
+    form(method="POST", action="/addVideo", enctype="multipart/form-data")
+      label(for="video_group") Video Group Id
+      br
+      input(type="text", name="video_group")
+      br
+      label(for="file") Upload File
+      br
+      input(type="file", name="file")
       br
       input(type="submit")
+  h1 Get Comments
+    hr
+    form(method="POST", action="/getComments")
+      label(for="itemId") Person-2 Hint: 12810496
+      input(type="text", name="itemId")
+      br
+      input(type="submit")
+
+  h1 Friends
+    hr
+    form(method="POST", action="/getFriends")
+      label(for="personId")
+      | Person Hint
+      br
+      input(type="text", name="personId")
+      br
+      input(type="submit")
+  h1 Video By Post
+    hr
+    form(method="POST", action="/getVideosByPost")
+      label(for="postId")
+      | Post Id (Hint: 12809472)
+      br
+      input(type="number", name="postId")
+      br
+      input(type="submit")
+//12809472

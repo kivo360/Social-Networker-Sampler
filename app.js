@@ -8,13 +8,12 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 var multer = require('multer');
 var expressValidator = require('express-validator');
-var fm = require('./controllers/FileManager');
+var fm = require('./controllers/Videos');
 var fs = require("fs");
 var grex = require('grex');
 var user = require('./controllers/User');
 var session = require('express-session');
 var passport = require('./config/passport');
-
 
 
 
@@ -85,7 +84,7 @@ app.get('/user', function (req, res) {
         res.render('user', {user: req.user});
     }
 });
-app.post('/login', user.postLogin);
+app.post('/login',  user.postLogin);
 app.post('/register', user.postRegister);
 
 // Creating Stuff
@@ -95,14 +94,14 @@ app.post('/addLike', user.postAddLike);
 
 //Video Work
 app.post('/newVideo', fm.addNewVideo);
-// app.post('/addVideo', fm.addVideo);
+app.post('/addVideo', fm.addVideo);
 app.post('/downloadVideo', fm.downloadVideo);
-// app.post('/getVideosByPost', fm.downloadVideo);
+app.post('/getVideosByPost', fm.getVideosByPost);
 
 // 'Get' User Commands
 // app.post('/getPostByUser', user.postByUser);
-// app.post('/getFriends', user.getFriends);
-// app.post('/getComments', user.getFriends);
+app.post('/getFriends', user.postGetFriends);
+app.post('/getComments', user.postGetComments);
 // app.post('/getLikers', user.getFriends);
 
 //Timeline stuff

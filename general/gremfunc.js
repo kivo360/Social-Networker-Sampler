@@ -125,9 +125,9 @@ var checkType = function (id, type, cb) {
 
         // Check for a the given type Now
         if(person.type !== type){
-            return cb(err, false);
+            return cb(err, {result: res.results[0], tval: false});
         }else{
-            return cb(err, true);
+            return cb(err, {result: res.results[0], tval: true});
         }
     });
 };
