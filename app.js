@@ -102,7 +102,7 @@ app.post('/getVideosByPost', fm.getVideosByPost);
 // app.post('/getPostByUser', user.postByUser);
 app.post('/getFriends', user.postGetFriends);
 app.post('/getComments', user.postGetComments);
-// app.post('/getLikers', user.getFriends);
+// app.post('/getLikers', user.getFriends); // Not 100 Needed
 
 //Timeline stuff
 // app.post('/getTimeline', user.getTimeline);

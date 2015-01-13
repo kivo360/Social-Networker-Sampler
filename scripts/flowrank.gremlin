@@ -1,7 +1,7 @@
-def flowRank(vx) {
-  m = [:]
+def flowRank() {
+  // m = [:]
   // Takes the verticies, ranks them, and returns the top 5.
   // Needs to be pre-filtered first
-  vx.as('x').out.groupCount(m).loop('x'){c++ < 1000}.iterate()
-  return m.sort{a,b -> b.value <=> a.value}[0..4]
+  // vx.as('x').out.groupCount(m).loop('x'){c++ < 1000}.iterate()
+  return g.V
 }

@@ -12,8 +12,10 @@ var Timeline = function () {
 var gremtool = require('./../general/gremfunc');
 var async = require('async');
 var social = require('./../config/socialqueries');
+var time = social.Timeline;
+var flowrank = social.Special.flowrank;
 
-Timeline.prototype.createTimeline = function (lastDownloaded, lastPost, cb) {
+Timeline.prototype.createTimeline = function (lastPost, userId, callb) {
     var timelineArr = [];
     var self = this;
     // look through the first postIds
@@ -38,36 +40,45 @@ Timeline.prototype.createTimeline = function (lastDownloaded, lastPost, cb) {
 
 
            }, function(err){
-               cb(null);
+               cb(null, timelineArr);
            });
         },
-        user_ingroup_post: function () {
-            // Get all of the friend of friend's post
-                // send query togroovy
-                // run through eigenvector centrality
-                // Get top 5 results
+        // Get all of the friend's post
+        friend_post: function (cb) {
+
+            gremtool.run(flowrank(time.friend_post(userId).script), function (err, res) {
+                //console.log(res);
+                cb(null, res);
+            });
         },
-        user_outgroup_post: function () {
-            // Get all of the friend outgroup post
-                // send query togroovy
-                // run through eigenvector centrality
-                // Get top 5 results
+        // Get all of the friend of friend post
+        friend_of_friend_post: function (cb) {
+            gremtool.run(flowrank(time.friend_of_friend_post(userId).script), function (err, res) {
+                //console.log(res);
+                cb(null, res);
+            });
         },
-        friend_of_friend_post: function () {
-            // Get all of the friend of friend's post
-                // send query togroovy
-                // run through eigenvector centrality
-                // Get top 5 results
-        },
-        friend_like: function () {
-            // get all of what the friend likes
+        // Get all of the friend's likes post
+        friend_like: function (cb) {
+            gremtool.run(flowrank(time.friend_like_post(userId).script) , function (err, res) {
+                //console.log(res);
+                cb(null, res);
+            });
 
         }
+    }, function (err, results) {
+        //console.log(results);
+        callb(results);
+        //console.log(timelineArr)
     })
 };
 
+new Timeline().createTimeline(1234, 10242816, function (res) {
+    console.log(res);
+});
+
+module.exports = new Timeline();
 
 
-new Timeline().createTimeline(1234, 4567);
 
 

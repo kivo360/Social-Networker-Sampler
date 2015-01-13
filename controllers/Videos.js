@@ -333,3 +333,10 @@ exports.getVideosByPost = function (req, res) {
          return res.json({results: results.videoByPost.results})
     });
 };
+
+
+
+//gremtool.run(social.Special.flowrank(social.User.get_friends(10243072).script), function (err, res) {
+//    var derp = JSON.stringify(res.results, null, 4);
+//    console.log(derp)
+//})

@@ -14,10 +14,13 @@ var gremlin = grex.gremlin;
 var g = grex.g;
 var T = grex.T;
 var _ = grex._;
-
+var gremtool = require('./../general/gremfunc');
 var q = gremlin();
-var l = q.var(g.v(1234).out('commented').out('derp').has('createdTime', 'T.gte', 12345));
-console.log(l.toGroovy());
+
+
+
+
+
 //console.log()
 
 
@@ -48,11 +51,48 @@ module.exports = {
         // Who added on this video post
         contributors_by_post: function (postId) {
             var query = gremlin();
+            // g.v(10242816).both('friend').out('recorded').out('apartof').out('vg_of')
             query(g.v(postId).in('vg_of').in('apartof').in('recorded'));
             return query;
         }
     },
-
+    Special: {
+        flowrank: function (queryString) {
+            // Must be a string
+            if(typeof queryString !== "string"){
+                return;
+            }else{
+                var query = gremlin();
+                query('c=0');
+                query('m=[:]');
+                query('vx = ' +  queryString);
+                query("vx.as('x').groupCount(m).loop('x'){c++ < 500}.iterate()");
+                query("m.sort{a,b -> b.value <=> a.value}[0..4]");
+                //query('m')
+                return query;
+            }
+        }
+    },
+    Timeline: {
+        friend_post: function (userId) {
+            var query = gremlin();
+            // TODO: change friend query to match correct type of friends list
+            // g.v(10242816).both('friend').out('recorded').out('apartof').out('vg_of')
+            query(g.v(userId).both('friend').out('recorded').out('apartof').out('vg_of'));
+            return query;
+        },
+        friend_of_friend_post: function (userId) {
+            var query = gremlin();
+            query(g.v(userId).both('friend').both('friend').out('recorded').out('apartof').out('vg_of'));
+            return query;
+        },
+        friend_like_post: function(userId){
+            var query = gremlin();
+            // .has('type', 'T.eq', 'post')
+            query(g.v(userId).both('friend').out('like'));
+            return query;
+        }
+    },
     // Who liked this item?
     get_likers: function (id) {
         // Check type: can't be user
@@ -84,7 +124,5 @@ module.exports = {
         query(g.v(postId).in('vg_of').in('apartof'));
         return query;
     }
-
-    //Timeline = Randomize sending to mongo
 
 };
