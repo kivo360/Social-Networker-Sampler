@@ -8,7 +8,7 @@
 
 
 var bcrypt = require('bcrypt');
-
+var _ = require('lodash');
 
 /***
  * Standardize the response header
@@ -41,54 +41,90 @@ Response.prototype.done = function (cb) {
     return cb({success: this.success, message: this.message, eCode: this.errorCode, obj: this.rObj});
 };
 
+/**
+ * Contains all processing types
+ * Will use lodash to manipulate all objs added in
+ * @constructor
+ */
+var ObjProcessor = function () {
+
+};
+
+ObjProcessor.prototype = {
+    normalRexster: function (obj, cb) {
+        // Remove the type key & value
+        // _type: 'vertex'
+        cb.call(this, _.omit(obj, '_type'));
+        return this;
+    },
+    flowRexster: function (obj, cb) {
+        // Grab the _key, then call call normalRexster
+        // Get 0th Object
+        // Loop through both keys
+
+        _.forIn(_.first(obj), function(value, key){
+
+        });
+
+        cb.call(this, _.omit(obj, '_type'));
+
+
+        return this;
+    }
+};
+
 
 /**
- * Will use lodash to manipulate all objs added in.
  * done() will return a object array with all objects having basic information
  * @constructor
  */
 var ObjStandard = function () {
+    var op = new ObjProcessor();
+    this.returnArr = [];
 
+    // Type lookup
+    this.processLateral = {
+        'nRex': 'Normal Rexster',
+        'frRex': 'Flowrank Rexster',
+        'userRex': 'User Rexster Response',
+        'default': 'Normal Rexster'
+    };
 };
 
 /**
  * Runs through given process depending on type
- * @param singleObj
+ * @param obj
  * @param type
  * @returns {ObjStandard}
  */
-ObjStandard.prototype.addSingleObj = function (obj, type) {
-    // Type lookup. Send obj to function by type
-    var lateral = {
-        'coke': 'Coke',
-        'pepsi': 'Pepsi',
-        'lemonade': 'Lemonade',
-        'default': 'Default item'
-    };
-    return (lateral[type] || lateral['default']);
-};
-
-ObjStandard.prototype.addAddObj = function (objArr, type) {
-    var lateral = {
-        'coke': 'Coke',
-        'pepsi': 'Pepsi',
-        'lemonade': 'Lemonade',
-        'default': 'Default item'
-    };
-};
-
-console.log(new ObjStandard().addSingleObj({}, 'lemonade'));
+ObjStandard.prototype.addObj = function (obj, type) {
 
 
-function testFunction(){
-    new Response('success')
-        .setMessage("This shit sucks")
-        .setErrorCode("SUCK")
-        .done(function (obj) {
-            console.log(obj);
+    if(typeof obj === "array" && type !== "frRex"){
+        this.arrayProcessing(this.processLateral[type], obj, function (result) {
+            // Signal the process is done
+            return this;
         });
+    }else if(typeof obj === "object"){
 
-}
+        this.singleProcessing(this.processLateral[type], obj, function (result) {
+            // Signal the process is done
+            return this
+        });
+    }
+
+};
+
+ObjStandard.prototype.arrayProcessing = function (process, obj, cb) {
+    // Send each result to array using event emitter
+    // process()
+};
+
+ObjStandard.prototype.singleProcessing = function (process, obj, cb) {
+
+};
+
+
 
 
 
@@ -143,8 +179,71 @@ var User = function(){
     }
 };
 
-new User().buildJSON(function (dick){
-   console.log(dick);
-});
+module.exports = {
+    create: {
+        user: User,
+        post: "Post Object Goes Here",
+        comment: "Comment Object Goes Here",
+        video: "Video Goes Here",
+        video_group: "Video Group Goes Here"
+    },
+    response: Response,
+    cleaner: ObjStandard
+};
 
-testFunction();
+
+
+function test(){
+    var suck = [
+        {
+            "10242816": {
+                "_value": 501,
+                "_key": {
+                    "uname": "kivo360",
+                    "type": "person",
+                    "_id": 10242816,
+                    "_type": "vertex"
+                }
+            },
+            "12800256": {
+                "_value": 5,
+                "_key": {
+                    "bitchNiggle": "ajkjsjnlk",
+                    "type": "person",
+                    "_id": 12800256,
+                    "_type": "vertex"
+                }
+            }
+        }
+    ]
+    //console.log(suck[0]);
+    _.forIn(suck[0], function(value, key){
+        //console.log(key);
+        var shit = _.omit(value._key, '_type')
+        console.log(shit);
+    });
+}
+
+test();
+/** [
+    {
+        "10242816": {
+            "_value": 501,
+            "_key": {
+                "uname": "kivo360",
+                "type": "person",
+                "_id": 10242816,
+                "_type": "vertex"
+            }
+        },
+        "12800256": {
+            "_value": 5,
+            "_key": {
+                "bitchNiggle": "ajkjsjnlk",
+                "type": "person",
+                "_id": 12800256,
+                "_type": "vertex"
+            }
+        }
+    }
+] **/
