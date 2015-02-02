@@ -1,7 +1,7 @@
 /**
  * Created by kevin on 1/12/15.
  */
-
+var oman = require('../general/object_manager');
 
 var Timeline = function () {
     // set the initial post ids for user's time line.
@@ -14,6 +14,7 @@ var async = require('async');
 var social = require('./../config/socialqueries');
 var time = social.Timeline;
 var flowrank = social.Special.flowrank;
+var _ = require('lodash');
 
 Timeline.prototype.createTimeline = function (lastPost, userId, callb) {
     var timelineArr = [];
@@ -23,7 +24,7 @@ Timeline.prototype.createTimeline = function (lastPost, userId, callb) {
     async.auto({
        get_initial_videos: function (cb) {
            async.each(self.firstVideos,
-               // Get the post viea postid, and send it into the array
+               // Get the post via postid, and send it into the array
                function (postId, callback) {
                    //console.log(postId);
                    gremtool.findById(postId, function (err, res) {
@@ -40,7 +41,9 @@ Timeline.prototype.createTimeline = function (lastPost, userId, callb) {
 
 
            }, function(err){
-               cb(null, timelineArr);
+                   oman.cleaner.addObj(timelineArr, "norm", function (other) {
+                    cb(null,other);
+               });
            });
         },
         // Get all of the friend's post
@@ -48,28 +51,38 @@ Timeline.prototype.createTimeline = function (lastPost, userId, callb) {
 
             gremtool.run(flowrank(time.friend_post(userId).script), function (err, res) {
                 //console.log(res);
-                cb(null, res);
+                oman.cleaner.addObj(res.results, "flow", function (other) {
+                    cb(null,other);
+                });
+
             });
         },
         // Get all of the friend of friend post
         friend_of_friend_post: function (cb) {
             gremtool.run(flowrank(time.friend_of_friend_post(userId).script), function (err, res) {
-                //console.log(res);
-                cb(null, res);
+                oman.cleaner.addObj(res.results, "flow", function (other) {
+                    cb(null,other);;
+                });
             });
         },
         // Get all of the friend's likes post
         friend_like: function (cb) {
             gremtool.run(flowrank(time.friend_like_post(userId).script) , function (err, res) {
-                //console.log(res);
-                cb(null, res);
+                oman.cleaner.addObj(res.results, "flow", function (other) {
+                    cb(null,other);
+                });
             });
 
         }
     }, function (err, results) {
-        //console.log(results);
-        callb(results);
-        //console.log(timelineArr)
+        var init = results.get_initial_videos;
+        var fof = results.friend_of_friend_post;
+        var fpost = results.friend_post;
+        var flike = results.friend_like;
+        var timeline = _.union(init, fof, fpost, flike);
+
+        callb(timeline);
+
     })
 };
 

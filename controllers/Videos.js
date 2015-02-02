@@ -169,6 +169,7 @@ exports.addNewVideo = function (req, res) {
 };
 
 
+
 // TODO: Change to postID instead of video_group
 exports.addVideo = function (req, res) {
     req.assert('video_group', 'This is empty. Should Not Be Empty').notEmpty();
@@ -264,6 +265,7 @@ exports.addVideo = function (req, res) {
 
 
 // To test download -- '6ebabcc2-737f-47e9-951f-232bdc15f71e.mp4'
+// 6ebabcc2-737f-47e9-951f-232bdc15f71e.mp4
 exports.downloadVideo = function (req, res) {
     req.assert('video_id', 'Video Id is empty. Should Not Be Empty').notEmpty();
     var errors = req.validationErrors();
@@ -287,7 +289,7 @@ exports.downloadVideo = function (req, res) {
             }else{
                 fileio.fs.unlink(local, function(err, result){
                     console.log("The file was deleted");
-                })
+                });
             }
         })
     });
@@ -338,8 +340,8 @@ exports.getVideosByPost = function (req, res) {
 
 
 
-gremtool.run(social.Special.flowrank(social.User.get_friends(10243072).script), function (err, res) {
-    var derp = JSON.stringify(res.results, null, 4);
-    console.log(derp)
-    console.log(social.Special.flowrank(social.User.get_friends(10243072).script).script);
-});
+//gremtool.run(social.Special.flowrank(social.User.get_friends(10243072).script), function (err, res) {
+//    var derp = JSON.stringify(res.results, null, 4);
+//    console.log(derp)
+//    console.log(social.Special.flowrank(social.User.get_friends(10243072).script).script);
+//});

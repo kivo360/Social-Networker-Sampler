@@ -1,9 +1,11 @@
 var gremtool = require('./../general/gremfunc');
+var token = require('./../general/token');
 var async = require('async');
 var bcrypt = require('bcrypt');
 var passport = require('./../config/passport');
 var social = require('./../config/socialqueries');
 var _ = require('lodash');
+
 
 exports.postLogin = function (req, res, next) {
     req.assert('phones', 'Not a phone number').len(7, 11).isInt();
@@ -17,14 +19,15 @@ exports.postLogin = function (req, res, next) {
 
     passport.authenticate('local', function(err, user, info) {
         if (err) return next(err);
+        console.log(user);
         if (!user) {
-            //req.flash('errors', { msg: info.message });
             return res.redirect('/login');
         }
         req.logIn(user, function(err) {
             if (err) return next(err);
-            //req.flash('success', { msg: 'Success! You are logged in.' });
-            res.redirect(req.session.returnTo || '/');
+            //Send the JSON token here. Make client save
+            res.json(token.create(user));
+
         });
     })(req, res, next);
 
@@ -73,11 +76,15 @@ exports.postRegister = function (req, res) {
                     }
                     //callback(null, user);
                     gremtool.create(user, function (err, use) {
-                        console.log(use)
+                        console.log(use);
                         callback(null, use);
                     });
                 }
     ], function (err, result) {
+        // log the user in scramble the token. Will later include the
+        //var payload = {uid: user.results[0]._id, date: new Date.valueOf()};
+        //var token = jwt.encode(payload, secrets.tokenSecret);
+        // var send = {token: token};
         res.json(result);
     });
     
@@ -88,6 +95,7 @@ exports.postRegister = function (req, res) {
 
 exports.postAddComment = function (req, res) {
     // Need to get the personId from the session.
+    // EDIT: GET personId from token. Make sure to 
     req.assert('itemId', 'Your item Id Is Not a number').isInt();
     req.assert('comment', 'Comment is not a string').notEmpty();
     var errors = req.validationErrors();
@@ -383,7 +391,9 @@ exports.postGetLikers = function (req, res) {
     });
 };
 
-
+exports.getTimeline = function (req, res) {
+    req.assert('personId', 'Not a number').isInt().notEmpty();
+};
 
 exports.getContributers = function (req, res) {
     // Send in post id

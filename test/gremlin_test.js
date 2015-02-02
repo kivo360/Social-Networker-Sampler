@@ -11,7 +11,7 @@ var settings = require('./../config/secret');
  **/
 
 
-var client = grex.createClient(settings.titan);
+var client = grex.createClient(settings.titan2);
 
 var gremlin = grex.gremlin;
 var g = grex.g;
@@ -19,25 +19,16 @@ var T = grex.T;
 var _ = grex._;
 
 
+
 //gremtool.remove.all();
 //gremtool.remove.edges();
 //gremtool.remove.vertex();
 
-var createUser = function () {
-    //gremtool.create({bitchNiggle: "YumYumYum", type: "random"}, function (err, result) {
-    //   console.log(result);
-    //});
-    var query = gremlin();
 
 
-    //gremtool.find({uname: "kivo360", type:"person"}, function (err, result) {
-    //    if(err){
-    //        console.log("There is an error");
-    //    } else{
-    //        console.log(result);
-    //    }
-    //});
-};
+//var createUser = function () {
+//    gremtool.create({bitchNiggles: "YumYumYum", type: "random"}, function (err, result) {});
+//};
 
 //var video = {
 //    //createdTime: 1420617405862,
@@ -46,10 +37,13 @@ var createUser = function () {
 //    type: "video"
 //};
 
-gremtool.create({createdTime: 1234, video_length: 832221, type: "video"}, function (err, result) {
-   console.log(result);
-});
+//gremtool.create({createdTime: 1234, video_length: 832221, type: "video"}, function (err, result) {
+//   console.log(result);
+//});
 
 //gremtool.create(video, function (err, result) {
 //   console.log(result);
 //});
+//for(var i = 0; i < 10000; i++){
+//    createUser();
+//}

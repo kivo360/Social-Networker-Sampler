@@ -28,6 +28,7 @@ module.exports = {
 
     // The user queries
     User: {
+        // Will transition to ingroup and outgroup
         get_friends: function (id) {
             // Check type
             // Will need to use server script to get working

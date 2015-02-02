@@ -11,16 +11,16 @@ var expressValidator = require('express-validator');
 var fm = require('./controllers/Videos');
 var fs = require("fs");
 var grex = require('grex');
-var user = require('./controllers/User');
 var session = require('express-session');
 var passport = require('./config/passport');
-
-
-
-
-
 //Connecting to mongo here
 
+
+
+
+
+var user = require('./controllers/User');
+var test = require('./controllers/Test');
 
 var settings = {
     'host': 'localhost',
@@ -61,6 +61,7 @@ app.use(multer());
 app.use(compress());
 app.use(favicon());
 app.use(logger('dev'));
+//app.use(bodyParser())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
@@ -102,6 +103,7 @@ app.post('/getVideosByPost', fm.getVideosByPost);
 // app.post('/getPostByUser', user.postByUser);
 app.post('/getFriends', user.postGetFriends);
 app.post('/getComments', user.postGetComments);
+app.post('/tokenTest', test.checkToken);
 // app.post('/getLikers', user.getFriends); // Not 100 Needed
 
 //Timeline stuff
