@@ -7,6 +7,7 @@ var social = require('./../config/socialqueries');
 var _ = require('lodash');
 
 
+
 exports.postLogin = function (req, res, next) {
     req.assert('phones', 'Not a phone number').len(7, 11).isInt();
     req.assert('password', 'Password must be at least 4 characters long').len(5);
@@ -26,7 +27,9 @@ exports.postLogin = function (req, res, next) {
         req.logIn(user, function(err) {
             if (err) return next(err);
             //Send the JSON token here. Make client save
-            res.json(token.create(user));
+            token.create(user, function (toke) {
+                return res.json(toke);
+            });
 
         });
     })(req, res, next);
@@ -44,7 +47,7 @@ exports.postRegister = function (req, res) {
     req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
     req.assert('fname', 'Incorrect first name (Either empty or not an alphabet)').notEmpty().isAlpha();
     req.assert('lname', 'Incorrect last name (Either empty or not an alphabet)').notEmpty().isAlpha();
-    //req.assert('uname', 'Cannot Use Special Characters').isAlphanumeric();
+
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
@@ -82,10 +85,14 @@ exports.postRegister = function (req, res) {
                 }
     ], function (err, result) {
         // log the user in scramble the token. Will later include the
-        //var payload = {uid: user.results[0]._id, date: new Date.valueOf()};
+        var payload = {userId: result.results[0]._id, last: result.results[0].last, first: result.results[0].first};
+        token.create(payload, function (toke) {
+            return res.json(toke);
+        });
         //var token = jwt.encode(payload, secrets.tokenSecret);
         // var send = {token: token};
-        res.json(result);
+
+
     });
     
 };
@@ -97,18 +104,29 @@ exports.postAddComment = function (req, res) {
     // Need to get the personId from the session.
     // EDIT: GET personId from token. Make sure to 
     req.assert('itemId', 'Your item Id Is Not a number').isInt();
-    req.assert('comment', 'Comment is not a string').notEmpty();
+    req.assert('comment', 'Comment is not a String').notEmpty();
+    req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
+    //Assert for token value in body
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
-    } else if(req.session.passport.user === undefined){
-        return res.redirect('/login');
     }
     var itemId = req.param('itemId');
     var commentText = req.param('comment');
-
+    var toke = req.param('token');
 
     async.auto({
+            //check_token: function (callback) {
+            //
+            //    callback(null, token.validate(toke));
+            //},
+            //create_new_token: ['check_token', function (callback, resu) {
+            //    if(!Boolean(resu.check_token)){
+            //        return res.json({message: "Your session information is not correct"});
+            //    }else{
+            //        callback(token.create(resu.check_token));
+            //    }
+            //}],
             check_item: function (callback) {
                 gremtool.type(itemId, 'person', function (err, resu) {
                     console.log(resu);
@@ -150,7 +168,7 @@ exports.postAddComment = function (req, res) {
                     callback(null, "success")
                 });
             }],
-            person_to_comment: ['create_comment', function (callback, resu) {
+            person_to_comment: ['get_token', 'create_comment', function (callback, resu) {
                 // take the id from the created comment and link it to the user Id
                 console.log(req.user.userId);
                 gremtool.rel(req.user.userId, resu.create_comment._id, "commented", function (err, result) {
@@ -169,17 +187,26 @@ exports.postAddComment = function (req, res) {
 exports.postFriendUser = function (req, res) {
 
     req.assert('personId2', 'Not a number').isInt();
+    req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
-    }else if(req.session.passport.user === undefined){
-        return res.redirect('/login');
     }
 
     var newFriend = req.param('personId2');
 
 
     async.auto({
+                //check_token: function (callback) {
+                //    callback(null, token.validate(toke));
+                //},
+                //create_new_token: ['check_token', function (callback, resu) {
+                //    if(!Boolean(resu.check_token)){
+                //        return res.json({message: "Your session information is not correct"});
+                //    }else{
+                //        callback(null, token.create(resu.check_token));
+                //    }
+                //}],
                 check_person: function (callback) {
                     gremtool.type(newFriend, 'person', function (err, resu) {
                         console.log(resu);
@@ -223,15 +250,23 @@ exports.postAddLike = function (req, res) {
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
     }
-    else if(req.session.passport.user === undefined){
-        return res.redirect('/login');
-    }
+
 
 
     var itemId = req.param('itemId');
 
 
     async.auto({
+                //check_token: function (callback) {
+                //    callback(null, token.validate(toke));
+                //},
+                //create_new_token: ['check_token', function (callback, resu) {
+                //    if(!Boolean(resu.check_token)){
+                //        return res.json({message: "Your session information is not correct"});
+                //    }else{
+                //        callback(token.create(resu.check_token));
+                //    }
+                //}],
                 check_person: function (callback) {
                     gremtool.type(itemId, 'person', function (err, resu) {
                         if( resu == "nill"){
@@ -319,10 +354,7 @@ exports.postGetComments = function (req, res) {
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
-    }else if(req.session.passport.user === undefined){
-        return res.redirect('/login');
     }
-
 
     var item = req.param('itemId');
 
@@ -356,16 +388,15 @@ exports.postGetComments = function (req, res) {
  */
 exports.postGetLikers = function (req, res) {
     req.assert('itemId', 'Not a number').isInt();
+    req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
-    } else if(req.session.passport.user === undefined){
-        return res.redirect('/login');
     }
 
 
     var item = req.params('itemId');
-
+    var token =  req.params('token');
 
     async.auto({
                 // Validate to see if the vertex is a person
@@ -392,7 +423,9 @@ exports.postGetLikers = function (req, res) {
 };
 
 exports.getTimeline = function (req, res) {
-    req.assert('personId', 'Not a number').isInt().notEmpty();
+    req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
+    req.assert('laccesstime', 'Your last access time in milliseconds').isInt().notEmpty();
+    //req.assert('')
 };
 
 exports.getContributers = function (req, res) {
