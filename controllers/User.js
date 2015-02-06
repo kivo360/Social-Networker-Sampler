@@ -1,12 +1,12 @@
 var gremtool = require('./../general/gremfunc');
-var token = require('./../general/token');
+var tokenStuff = require('./../general/token');
 var async = require('async');
 var bcrypt = require('bcrypt');
 var passport = require('./../config/passport');
 var social = require('./../config/socialqueries');
 var _ = require('lodash');
-
-
+var timeline = require('./Timeline');
+//var Timeline = new timeline;
 
 exports.postLogin = function (req, res, next) {
     req.assert('phones', 'Not a phone number').len(7, 11).isInt();
@@ -20,14 +20,13 @@ exports.postLogin = function (req, res, next) {
 
     passport.authenticate('local', function(err, user, info) {
         if (err) return next(err);
-        console.log(user);
         if (!user) {
             return res.redirect('/login');
         }
         req.logIn(user, function(err) {
             if (err) return next(err);
             //Send the JSON token here. Make client save
-            token.create(user, function (toke) {
+            tokenStuff.create(user, function (toke) {
                 return res.json(toke);
             });
 
@@ -63,7 +62,7 @@ exports.postRegister = function (req, res) {
                 },
                 function (exist, callback) {
                     // If this person doesn't exist create an object of them
-                    console.log("Does the user exist? ", exist);
+                    //console.log("Does the user exist? ", exist);
                     if(!exist){
                         UserObjCreator(req.param('phone'), req.param('password'), req.param('fname'), req.param('lname'), function (result) {
                             callback(null, result)
@@ -73,26 +72,24 @@ exports.postRegister = function (req, res) {
                     }
                 },
                 function (user, callback) {
-                    console.log(user);
+                    //console.log(user);
                     if(!user){
-                        callback(null, {message: "The User With The Number " + req.param('phone') + " Already Exist"})
+                        callback(null, {message: "The User With The Number " + req.param('phone') + " Already Exist"}, true)
                     }
-                    //callback(null, user);
                     gremtool.create(user, function (err, use) {
-                        console.log(use);
-                        callback(null, use);
+                        callback(null, use, false);
                     });
                 }
-    ], function (err, result) {
-        // log the user in scramble the token. Will later include the
-        var payload = {userId: result.results[0]._id, last: result.results[0].last, first: result.results[0].first};
-        token.create(payload, function (toke) {
-            return res.json(toke);
-        });
-        //var token = jwt.encode(payload, secrets.tokenSecret);
-        // var send = {token: token};
+    ], function (err, result, exist) {
+        if(Boolean(exist)){
+            return res.json(result);
+        }else{
+            var payload = {userId: result.results[0]._id, lastname: result.results[0].last, firstname: result.results[0].first};
 
-
+            tokenStuff.create(payload, function (toke) {
+                return res.json(toke);
+            });
+        }
     });
     
 };
@@ -113,20 +110,18 @@ exports.postAddComment = function (req, res) {
     }
     var itemId = req.param('itemId');
     var commentText = req.param('comment');
-    var toke = req.param('token');
+    var token = req.param('token');
 
     async.auto({
-            //check_token: function (callback) {
-            //
-            //    callback(null, token.validate(toke));
-            //},
-            //create_new_token: ['check_token', function (callback, resu) {
-            //    if(!Boolean(resu.check_token)){
-            //        return res.json({message: "Your session information is not correct"});
-            //    }else{
-            //        callback(token.create(resu.check_token));
-            //    }
-            //}],
+            check_token: function (callback) {
+                tokenStuff.validate(token, function (valtoken) {
+                    if(!valtoken){
+                        return res.json({error: "Your token is not valid try to login again."});
+                    }
+                    callback(null, valtoken);
+                });
+
+            },
             check_item: function (callback) {
                 gremtool.type(itemId, 'person', function (err, resu) {
                     console.log(resu);
@@ -170,13 +165,14 @@ exports.postAddComment = function (req, res) {
             }],
             person_to_comment: ['get_token', 'create_comment', function (callback, resu) {
                 // take the id from the created comment and link it to the user Id
-                console.log(req.user.userId);
-                gremtool.rel(req.user.userId, resu.create_comment._id, "commented", function (err, result) {
+                console.log(resu.check_token.userId);
+                gremtool.rel(resu.check_token.userId, resu.create_comment._id, "commented", function (err, result) {
                     if(err){
                         console.log(err);
                         return res.json({message: "Failure, comment couldn\'t be added"})
+                    }else{
+                        callback(null, "success");
                     }
-                    callback(null, "success");
                 });
             }]
     }, function (err, result) {
@@ -194,19 +190,19 @@ exports.postFriendUser = function (req, res) {
     }
 
     var newFriend = req.param('personId2');
-
+    var token =  req.params('token');
 
     async.auto({
                 //check_token: function (callback) {
-                //    callback(null, token.validate(toke));
-                //},
-                //create_new_token: ['check_token', function (callback, resu) {
-                //    if(!Boolean(resu.check_token)){
-                //        return res.json({message: "Your session information is not correct"});
-                //    }else{
-                //        callback(null, token.create(resu.check_token));
-                //    }
-                //}],
+                check_token: function (callback) {
+                    tokenStuff.validate(token, function (valtoken) {
+                        if(!valtoken){
+                            return res.json({error: "Your token is not valid try to login again."});
+                        }
+                        callback(null, valtoken);
+                    });
+
+                },
                 check_person: function (callback) {
                     gremtool.type(newFriend, 'person', function (err, resu) {
                         console.log(resu);
@@ -246,6 +242,7 @@ exports.postFriendUser = function (req, res) {
 
 exports.postAddLike = function (req, res) {
     req.assert('itemId', 'Your item Id Is Not a number').isInt();
+    req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
@@ -254,19 +251,18 @@ exports.postAddLike = function (req, res) {
 
 
     var itemId = req.param('itemId');
-
+    var token =  req.params('token');
 
     async.auto({
-                //check_token: function (callback) {
-                //    callback(null, token.validate(toke));
-                //},
-                //create_new_token: ['check_token', function (callback, resu) {
-                //    if(!Boolean(resu.check_token)){
-                //        return res.json({message: "Your session information is not correct"});
-                //    }else{
-                //        callback(token.create(resu.check_token));
-                //    }
-                //}],
+                check_token: function (callback) {
+                    tokenStuff.validate(token, function (valtoken) {
+                        if(!valtoken){
+                            return res.json({error: "Your token is not valid try to login again."});
+                        }
+                        callback(null, valtoken);
+                    });
+
+                },
                 check_person: function (callback) {
                     gremtool.type(itemId, 'person', function (err, resu) {
                         if( resu == "nill"){
@@ -307,6 +303,7 @@ exports.postAddLike = function (req, res) {
  */
 exports.postGetFriends = function (req, res) {
     req.assert('personId', 'Not a number').isInt();
+    req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
@@ -316,8 +313,18 @@ exports.postGetFriends = function (req, res) {
     //}
 
     var p_id = req.param('personId');
+    var token =  req.params('token');
 
     async.auto({
+                check_token: function (callback) {
+                    tokenStuff.validate(token, function (valtoken) {
+                        if(!valtoken){
+                            return res.json({error: "Your token is not valid try to login again."});
+                        }
+                        callback(null, valtoken);
+                    });
+
+                },
                 // Validate to see if the vertex is a person
                 check_person: function (callback) {
                     gremtool.type(p_id, "person", function (err, result) {
@@ -339,7 +346,7 @@ exports.postGetFriends = function (req, res) {
                             return res.json({message: "Error: Not A User"})
                         }
 
-                    }]
+                }]
     });
 
     //res.json({message: "The Input Works!!!"});
@@ -350,15 +357,25 @@ exports.postGetFriends = function (req, res) {
  * On the given item
  */
 exports.postGetComments = function (req, res) {
-    req.assert('itemId', 'Not a number').isInt();
+    req.assert('itemId', 'Not a number').isInt().notEmpty();
+    req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
     }
 
     var item = req.param('itemId');
+    var token =  req.params('token');
 
     async.auto({
+                checkToken: function (callback) {
+                    tokenStuff.validate(token, function (valtoken) {
+                        if(!valtoken){
+                            return res.json({error: "Your token is not valid try to login again."});
+                        }
+                        callback(null, valtoken);
+                    });
+                },
                 // Validate to see if the vertex is a person (commentOf)
                 check_person: function (callback) {
                     gremtool.type(item, "person", function (err, result) {
@@ -378,7 +395,7 @@ exports.postGetComments = function (req, res) {
                         }else{
                             return res.json({message: "Error: Not A User"})
                         }
-                    }]
+                }]
     });
 };
 
@@ -399,6 +416,14 @@ exports.postGetLikers = function (req, res) {
     var token =  req.params('token');
 
     async.auto({
+                checkToken: function (callback) {
+                    tokenStuff.validate(token, function (valtoken) {
+                        if(!valtoken){
+                            return res.json({error: "Your token is not valid try to login again."});
+                        }
+                        callback(null, valtoken);
+                    });
+                },
                 // Validate to see if the vertex is a person
                 check_person: function (callback) {
                     gremtool.type(item, "person", function (err, result) {
@@ -425,7 +450,37 @@ exports.postGetLikers = function (req, res) {
 exports.getTimeline = function (req, res) {
     req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
     req.assert('laccesstime', 'Your last access time in milliseconds').isInt().notEmpty();
-    //req.assert('')
+
+    var errors = req.validationErrors();
+    if(errors){
+        return res.json({message: "One of your inputs is not correct.", err: errors});
+    }
+
+    var accesstime = req.param('laccesstime');
+    var token =  req.param('token');
+    //return res.json({token: token, access: accesstime});
+    async.auto({
+        checkToken: function (callback) {
+            tokenStuff.validate(token, function (valtoken) {
+                if(!valtoken){
+                    return res.json({error: "Your token is not valid try to login again."});
+                } callback(null, valtoken);
+            });
+        },
+        getTimeline: ['checkToken', function(callback, resu){
+            console.log(resu.checkToken.userId);
+            timeline.createTimeline(accesstime, resu.checkToken.userId, function (ressy) {
+                //console.dir(ressy);
+                //console.log(ressy)
+                if(!Boolean(ressy[0])){
+                    return res.json({message: "You have nothing new in your timeline."})
+                }
+                else{
+                    return res.json({timeline: ressy})
+                }
+            });
+        }]
+    });
 };
 
 exports.getContributers = function (req, res) {

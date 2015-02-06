@@ -104,6 +104,7 @@ app.post('/getVideosByPost', fm.getVideosByPost);
 app.post('/getFriends', user.postGetFriends);
 app.post('/getComments', user.postGetComments);
 app.post('/tokenTest', test.checkToken);
+app.post('/timeline', user.getTimeline);
 // app.post('/getLikers', user.getFriends); // Not 100 Needed
 
 //Timeline stuff

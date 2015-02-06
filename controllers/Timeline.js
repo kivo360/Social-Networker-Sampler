@@ -32,9 +32,12 @@ Timeline.prototype.createTimeline = function (lastPost, userId, callb) {
                             console.log('ignoring ... ');
                             callback()
                        }else{
-                            //console.log(res);
-                            timelineArr.push(res.results[0]);
-                            callback()
+                           //console.log(res);
+                            if(Boolean(res) && Boolean(res.results)){
+                                timelineArr.push(res.results[0]);
+                                callback()
+                            }
+                           callback()
                        }
 
                    });
@@ -50,27 +53,40 @@ Timeline.prototype.createTimeline = function (lastPost, userId, callb) {
         friend_post: function (cb) {
 
             gremtool.run(flowrank(time.friend_post(userId).script), function (err, res) {
-                //console.log(res);
-                oman.cleaner.addObj(res.results, "flow", function (other) {
-                    cb(null,other);
-                });
-
+                if(Boolean(res) && Boolean(res.results)){
+                    oman.cleaner.addObj(res.results, "flow", function (other) {
+                        cb(null,other);
+                    });
+                }else{
+                    cb(null);
+                }
             });
         },
         // Get all of the friend of friend post
         friend_of_friend_post: function (cb) {
+
             gremtool.run(flowrank(time.friend_of_friend_post(userId).script), function (err, res) {
-                oman.cleaner.addObj(res.results, "flow", function (other) {
-                    cb(null,other);;
-                });
+                if(Boolean(res) && Boolean(res.results)){
+                    oman.cleaner.addObj(res.results, "flow", function (other) {
+                        cb(null,other);
+                    });
+                }else{
+                    cb(null);
+                }
             });
         },
         // Get all of the friend's likes post
         friend_like: function (cb) {
-            gremtool.run(flowrank(time.friend_like_post(userId).script) , function (err, res) {
-                oman.cleaner.addObj(res.results, "flow", function (other) {
-                    cb(null,other);
-                });
+
+            gremtool.run(flowrank(time.friend_like_post(userId).script) , function (err, res){
+                if(Boolean(res) && Boolean(res.results)){
+                    oman.cleaner.addObj(res.results, "flow", function (other) {
+                        cb(null,other);
+                    });
+                }else{
+                    cb(null, {});
+                }
+
             });
 
         }
@@ -80,15 +96,14 @@ Timeline.prototype.createTimeline = function (lastPost, userId, callb) {
         var fpost = results.friend_post;
         var flike = results.friend_like;
         var timeline = _.union(init, fof, fpost, flike);
-
         callb(timeline);
 
     })
 };
 
-new Timeline().createTimeline(1234, 10242816, function (res) {
-    console.log(res);
-});
+//  new Timeline().createTimeline(1234, 10242816, function (res) {
+//      console.log(res);
+//  });
 
 module.exports = new Timeline();
 

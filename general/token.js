@@ -17,12 +17,15 @@ function createToken (userData, cb) {
 
 var validateToken = function (tokenJson, cb) {
     // 2 month expiration time
+
     var decoded;
     try{
+
         decoded = jwt.decode(tokenJson, secret.tokenSecret);
     }catch(err){
         // Send err to log server
-        return false;
+        console.log(err);
+        return cb(false);
     }
 
 
@@ -30,14 +33,13 @@ var validateToken = function (tokenJson, cb) {
     var signedTime = decoded.time;
 
     if(signedTime < signedTime + exptime){
-        return decoded;
+        cb(decoded);
     }else{
-        // if the time isn't right, return a false
-        return false;
+        // if the time isn't right, return a create a new token. Serve the bitches
+        cb(false);
     }
     // Check the device information
     // if the device isn't right, return a false
-    cb(false);
 };
 
 

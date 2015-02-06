@@ -6,3 +6,5 @@ var gremtool = require('./../general/gremfunc');
 gremtool.remove.vertex(false, function(err, dick){
     console.log(dick);
 });
+
+gremtool.remove.all();
