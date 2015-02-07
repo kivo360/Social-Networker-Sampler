@@ -26,23 +26,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="User.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="User.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/controllers/User.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="624" max-vertical-offset="6734">
-              <caret line="75" column="30" selection-start-line="75" selection-start-column="30" selection-end-line="75" selection-end-column="30" />
+            <state vertical-scroll-proportion="0.59380096" vertical-offset="624" max-vertical-offset="6734">
+              <caret line="76" column="118" selection-start-line="76" selection-start-column="118" selection-end-line="76" selection-end-column="118" />
               <folding>
-                <element signature="e#11365#11527#0" expanded="false" />
-                <element signature="e#11382#11456#0" expanded="false" />
+                <element signature="e#11375#11537#0" expanded="false" />
+                <element signature="e#11392#11466#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Videos.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Videos.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/controllers/Videos.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5725938" vertical-offset="0" max-vertical-offset="3627">
+            <state vertical-scroll-proportion="0.0" vertical-offset="507" max-vertical-offset="3627">
               <caret line="29" column="28" selection-start-line="29" selection-start-column="28" selection-end-line="29" selection-end-column="28" />
               <folding>
                 <element signature="e#1761#2142#0" expanded="false" />
@@ -537,8 +537,8 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="3111">
           <caret line="5" column="26" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
           <folding>
-            <element signature="e#11365#11527#0" expanded="false" />
-            <element signature="e#11382#11456#0" expanded="false" />
+            <element signature="e#11375#11537#0" expanded="false" />
+            <element signature="e#11392#11466#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -919,20 +919,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/controllers/User.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="624" max-vertical-offset="6734">
-          <caret line="75" column="30" selection-start-line="75" selection-start-column="30" selection-end-line="75" selection-end-column="30" />
-          <folding>
-            <element signature="e#11365#11527#0" expanded="false" />
-            <element signature="e#11382#11456#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/controllers/Videos.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5725938" vertical-offset="0" max-vertical-offset="3627">
+        <state vertical-scroll-proportion="0.0" vertical-offset="507" max-vertical-offset="3627">
           <caret line="29" column="28" selection-start-line="29" selection-start-column="28" selection-end-line="29" selection-end-column="28" />
           <folding>
             <element signature="e#1761#2142#0" expanded="false" />
@@ -944,6 +933,17 @@
             <element signature="e#9034#9603#0" expanded="false" />
             <element signature="e#10273#10618#0" expanded="false" />
             <element signature="e#10723#11431#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/User.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.59380096" vertical-offset="624" max-vertical-offset="6734">
+          <caret line="76" column="118" selection-start-line="76" selection-start-column="118" selection-end-line="76" selection-end-column="118" />
+          <folding>
+            <element signature="e#11375#11537#0" expanded="false" />
+            <element signature="e#11392#11466#0" expanded="false" />
           </folding>
         </state>
       </provider>
