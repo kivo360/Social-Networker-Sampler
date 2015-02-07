@@ -163,9 +163,9 @@ exports.postAddComment = function (req, res) {
                     callback(null, "success")
                 });
             }],
-            person_to_comment: ['get_token', 'create_comment', function (callback, resu) {
+            person_to_comment: ['check_token', 'create_comment', function (callback, resu) {
                 // take the id from the created comment and link it to the user Id
-                console.log(resu.check_token.userId);
+                //console.log(resu.check_token.userId);
                 gremtool.rel(resu.check_token.userId, resu.create_comment._id, "commented", function (err, result) {
                     if(err){
                         console.log(err);
@@ -276,7 +276,7 @@ exports.postAddLike = function (req, res) {
 
                     // If false
                     if(!resu.check_person.tval){
-                        gremtool.rel(req.user.userId, itemId, "like", function (err, result) {
+                        gremtool.rel(req.check_token.userId, itemId, "like", function (err, result) {
                             if(err){
                                 console.log(err);
                                 return res.json({message: "Sorry, you can\'t like that."});

@@ -26,36 +26,34 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="User.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="User.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/controllers/User.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.5269167" vertical-offset="4587" max-vertical-offset="6734">
-              <caret line="477" column="21" selection-start-line="477" selection-start-column="21" selection-end-line="477" selection-end-column="21" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1482" max-vertical-offset="6734">
+              <caret line="111" column="19" selection-start-line="111" selection-start-column="8" selection-end-line="111" selection-end-column="19" />
               <folding>
-                <element signature="e#11368#11530#0" expanded="false" />
-                <element signature="e#11385#11459#0" expanded="false" />
+                <element signature="e#11379#11541#0" expanded="false" />
+                <element signature="e#11396#11470#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="layout.jade" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/layout.jade">
+      <file leaf-file-name="Videos.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/controllers/Videos.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.16" vertical-offset="0" max-vertical-offset="182">
-              <caret line="8" column="17" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Test.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/controllers/Test.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="312">
-              <caret line="11" column="9" selection-start-line="11" selection-start-column="9" selection-end-line="11" selection-end-column="9" />
+            <state vertical-scroll-proportion="4.2838497" vertical-offset="0" max-vertical-offset="3627">
+              <caret line="305" column="39" selection-start-line="305" selection-start-column="39" selection-end-line="305" selection-end-column="39" />
               <folding>
-                <element signature="e#0#38#0" expanded="false" />
+                <element signature="e#1761#2142#0" expanded="false" />
+                <element signature="e#2855#3341#0" expanded="false" />
+                <element signature="e#4807#5427#0" expanded="false" />
+                <element signature="e#6133#6604#0" expanded="false" />
+                <element signature="e#8217#8518#0" expanded="false" />
+                <element signature="e#8571#8953#0" expanded="false" />
+                <element signature="e#9034#9603#0" expanded="false" />
+                <element signature="e#10273#10618#0" expanded="false" />
+                <element signature="e#10723#11431#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -65,32 +63,10 @@
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="858" max-vertical-offset="2067">
-              <caret line="106" column="38" selection-start-line="106" selection-start-column="38" selection-end-line="106" selection-end-column="38" />
+              <caret line="91" column="21" selection-start-line="91" selection-start-column="11" selection-end-line="91" selection-end-column="21" />
               <folding>
                 <element signature="e#1780#1825#0" expanded="false" />
                 <element signature="e#1865#2018#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="removeDatabase.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/removeDatabase.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="195">
-              <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Timeline.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/controllers/Timeline.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="869" max-vertical-offset="1508">
-              <caret line="104" column="8" selection-start-line="104" selection-start-column="8" selection-end-line="104" selection-end-column="8" />
-              <folding>
-                <element signature="e#0#39#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -130,7 +106,6 @@
         <option value="$PROJECT_DIR$/config/socialqueries.js" />
         <option value="$PROJECT_DIR$/test/gremlin_test.js" />
         <option value="$PROJECT_DIR$/test/token.js" />
-        <option value="$PROJECT_DIR$/controllers/Videos.js" />
         <option value="$PROJECT_DIR$/public/javascripts/testFile.js" />
         <option value="$PROJECT_DIR$/views/test.jade" />
         <option value="$PROJECT_DIR$/general/gremfunc.js" />
@@ -145,6 +120,7 @@
         <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/controllers/Timeline.js" />
         <option value="$PROJECT_DIR$/controllers/User.js" />
+        <option value="$PROJECT_DIR$/controllers/Videos.js" />
       </list>
     </option>
   </component>
@@ -499,11 +475,21 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="55" />
+      <option name="time" value="57" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/controllers/Timeline.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="869" max-vertical-offset="1508">
+          <caret line="104" column="8" selection-start-line="104" selection-start-column="8" selection-end-line="104" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#39#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/config/socialqueries.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1855" max-vertical-offset="2227">
@@ -551,8 +537,8 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="3111">
           <caret line="5" column="26" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
           <folding>
-            <element signature="e#11368#11530#0" expanded="false" />
-            <element signature="e#11385#11459#0" expanded="false" />
+            <element signature="e#11379#11541#0" expanded="false" />
+            <element signature="e#11396#11470#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -797,9 +783,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="273">
           <caret line="5" column="30" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#39#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -813,27 +796,6 @@
             <element signature="e#544#559#0" expanded="false" />
             <element signature="e#687#787#0" expanded="false" />
             <element signature="e#821#870#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/controllers/Videos.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="936" max-vertical-offset="2782">
-          <caret line="169" column="0" selection-start-line="169" selection-start-column="0" selection-end-line="169" selection-end-column="0" />
-          <folding>
-            <element signature="e#1380#1761#0" expanded="false" />
-            <element signature="e#2474#2960#0" expanded="false" />
-            <element signature="e#3818#4330#0" expanded="false" />
-            <element signature="e#4415#5035#0" expanded="false" />
-            <element signature="e#5109#5612#0" expanded="false" />
-            <element signature="e#5715#6186#0" expanded="false" />
-            <element signature="e#6272#6744#0" expanded="false" />
-            <element signature="e#7674#8056#0" expanded="false" />
-            <element signature="e#8137#8706#0" expanded="false" />
-            <element signature="e#8784#9296#0" expanded="false" />
-            <element signature="e#9350#9695#0" expanded="false" />
-            <element signature="e#9800#10508#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -881,7 +843,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="973" max-vertical-offset="1599">
           <caret line="93" column="32" selection-start-line="93" selection-start-column="32" selection-end-line="93" selection-end-column="32" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -911,29 +872,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/removeDatabase.js">
+    <entry file="file://$PROJECT_DIR$/views/layout.jade">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="195">
-          <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="104" max-vertical-offset="182">
+          <caret line="8" column="17" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.js">
+    <entry file="file://$PROJECT_DIR$/controllers/Timeline.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="858" max-vertical-offset="2067">
-          <caret line="106" column="38" selection-start-line="106" selection-start-column="38" selection-end-line="106" selection-end-column="38" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="869" max-vertical-offset="1508">
+          <caret line="104" column="8" selection-start-line="104" selection-start-column="8" selection-end-line="104" selection-end-column="8" />
           <folding>
-            <element signature="e#1780#1825#0" expanded="false" />
-            <element signature="e#1865#2018#0" expanded="false" />
+            <element signature="e#0#39#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/layout.jade">
+    <entry file="file://$PROJECT_DIR$/test/removeDatabase.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.16" vertical-offset="0" max-vertical-offset="182">
-          <caret line="8" column="17" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="195">
+          <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
           <folding />
         </state>
       </provider>
@@ -948,23 +908,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/controllers/Timeline.js">
+    <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="869" max-vertical-offset="1508">
-          <caret line="104" column="8" selection-start-line="104" selection-start-column="8" selection-end-line="104" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="858" max-vertical-offset="2067">
+          <caret line="91" column="21" selection-start-line="91" selection-start-column="11" selection-end-line="91" selection-end-column="21" />
           <folding>
-            <element signature="e#0#39#0" expanded="false" />
+            <element signature="e#1780#1825#0" expanded="false" />
+            <element signature="e#1865#2018#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/controllers/User.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.5269167" vertical-offset="4587" max-vertical-offset="6734">
-          <caret line="477" column="21" selection-start-line="477" selection-start-column="21" selection-end-line="477" selection-end-column="21" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1482" max-vertical-offset="6734">
+          <caret line="111" column="19" selection-start-line="111" selection-start-column="8" selection-end-line="111" selection-end-column="19" />
           <folding>
-            <element signature="e#11368#11530#0" expanded="false" />
-            <element signature="e#11385#11459#0" expanded="false" />
+            <element signature="e#11379#11541#0" expanded="false" />
+            <element signature="e#11396#11470#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/Videos.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="4.2838497" vertical-offset="0" max-vertical-offset="3627">
+          <caret line="305" column="39" selection-start-line="305" selection-start-column="39" selection-end-line="305" selection-end-column="39" />
+          <folding>
+            <element signature="e#1761#2142#0" expanded="false" />
+            <element signature="e#2855#3341#0" expanded="false" />
+            <element signature="e#4807#5427#0" expanded="false" />
+            <element signature="e#6133#6604#0" expanded="false" />
+            <element signature="e#8217#8518#0" expanded="false" />
+            <element signature="e#8571#8953#0" expanded="false" />
+            <element signature="e#9034#9603#0" expanded="false" />
+            <element signature="e#10273#10618#0" expanded="false" />
+            <element signature="e#10723#11431#0" expanded="false" />
           </folding>
         </state>
       </provider>

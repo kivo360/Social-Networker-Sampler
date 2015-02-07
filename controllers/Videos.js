@@ -11,7 +11,7 @@
     var async = require('async');
     var social = require('./../config/socialqueries');
     var uuid = require('node-uuid');
-
+    var tokenStuff = require('./../general/token');
 
 var fileio = require('./../general/file_management');
 
@@ -19,6 +19,7 @@ var fileio = require('./../general/file_management');
 exports.addNewVideo = function (req, res) {
     //req.assert('videoTags', 'Not an array').notEmpty();
     req.assert('post_comment', 'This is empty. Should Not Be Empty').notEmpty();
+    req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
@@ -28,11 +29,10 @@ exports.addNewVideo = function (req, res) {
     // Check for video file
     if(uploadedFile === undefined){
         res.json({message: "You didn\'t add a file"});
-    }if(req.session.passport.user === undefined){
-        return res.redirect('/login');
     }
 
     var post_comment = req.param('post_comment');
+
     var typeCheck = fileio.fileCheck(uploadedFile.name, ['mp4']) && fileio.mimeCheck(uploadedFile.mimetype, 'video/mp4');
     //Does the file meet validation?
     if(!typeCheck){
@@ -42,6 +42,15 @@ exports.addNewVideo = function (req, res) {
 
     // TODO: Offload this into separate file after for refactor
     async.auto({
+            check_token: function (callback) {
+                tokenStuff.validate(token, function (valtoken) {
+                    if(!valtoken){
+                        return res.json({error: "Your token is not valid try to login again."});
+                    }
+                    callback(null, valtoken);
+                });
+
+            },
             upload_video_file: function (callback) {
                 // Uploading the file
                 fileio.upload(uploadedFile, 'mp4', function (err, result) {
@@ -103,7 +112,7 @@ exports.addNewVideo = function (req, res) {
             user_to_video: ['add_video_node', function (callback, results) {
                 // Link the user to the video 'created'
                 var videoId = results.add_video_node._id;
-                var userId = req.user.userId;
+                var userId = results.check_token.userId;
                 gremtool.rel(userId, videoId, "recorded", function (err, result) {
                     if(err){
                         console.log(err);
@@ -125,9 +134,9 @@ exports.addNewVideo = function (req, res) {
                     callback(null, "success");
                 });
             }],
-            user_to_post: ['create_post', function (callback, results) {
+            user_to_post: ['check_token', 'create_post', function (callback, results) {
                 // Connect the user and post together
-                var userId = req.user.userId;
+                var userId = results.check_token.userId;
                 var postId = results.create_post._id;
                 gremtool.rel(userId, postId, "posted", function (err, result) {
                     if(err){
@@ -148,8 +157,8 @@ exports.addNewVideo = function (req, res) {
                     callback(null, "success");
                 });
             }],
-            user_to_video_group: ['create_video_group', function(callback, results){
-                var userId = req.user.userId;
+            user_to_video_group: ['check_token', 'create_video_group', function(callback, results){
+                var userId = results.check_token.userId;
                 var video_groupId = results.create_video_group._id;
                 gremtool.rel(userId, video_groupId, "created", function (err, result) {
                     if(err){
@@ -173,6 +182,7 @@ exports.addNewVideo = function (req, res) {
 // TODO: Change to postID instead of video_group
 exports.addVideo = function (req, res) {
     req.assert('video_group', 'This is empty. Should Not Be Empty').notEmpty();
+    req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
@@ -189,8 +199,17 @@ exports.addVideo = function (req, res) {
     }
 
     var vgId = req.param('video_group');
-
+    var token = req.param('token');
     async.auto({
+            check_token: function (callback) {
+                tokenStuff.validate(token, function (valtoken) {
+                    if(!valtoken){
+                        return res.json({error: "Your token is not valid try to login again."});
+                    }
+                    callback(null, valtoken);
+                });
+
+            },
             upload_video_file: function (callback) {
                 // Uploading the file
                 fileio.upload(uploadedFile, 'mp4', function (err, result) {
@@ -219,10 +238,10 @@ exports.addVideo = function (req, res) {
                 });
 
             }],
-            user_to_video: ['add_video_node', function (callback, results) {
+            user_to_video: ['check_token', 'add_video_node', function (callback, results) {
                 // Link the user to the video 'created'
                 var videoId = results.add_video_node._id;
-                var userId = req.user.userId;
+                var userId = results.check_token.userId;
                 gremtool.rel(userId, videoId, "recorded", function (err, result) {
                     if(err){
                         console.log(err);
@@ -268,13 +287,14 @@ exports.addVideo = function (req, res) {
 // 6ebabcc2-737f-47e9-951f-232bdc15f71e.mp4
 exports.downloadVideo = function (req, res) {
     req.assert('video_id', 'Video Id is empty. Should Not Be Empty').notEmpty();
+    //req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
     }
 
     var v_id = req.param('video_id');
-
+    //var token = req.param('token');
     // Begin download here
     fileio.download(v_id, function (err, local) {
         // TODO: Switch to res.sendFile for streaming instead of res.download(fileName, options)
@@ -300,13 +320,23 @@ exports.downloadVideo = function (req, res) {
 exports.getVideosByPost = function (req, res) {
     // Check for post id
     req.assert('postId', 'Not a number').notEmpty().isInt();
-
-    var p_id = req.param('postId');
+    req.assert('token', 'Your Token Should Not Be Empty').notEmpty();
     var errors = req.validationErrors();
     if(errors){
         return res.json({message: "One of your inputs is not correct.", err: errors});
     }
+    var p_id = req.param('postId');
+    var token = req.param('token');
     async.auto({
+        check_token: function (callback) {
+            tokenStuff.validate(token, function (valtoken) {
+                if(!valtoken){
+                    return res.json({error: "Your token is not valid try to login again."});
+                }
+                callback(null, valtoken);
+            });
+
+        },
         check_post: function (callback) {
             gremtool.type(p_id, "post", function (err, result) {
                 if(err){
@@ -317,7 +347,7 @@ exports.getVideosByPost = function (req, res) {
                 }
             });
         },
-        videoByPost: ['check_post', function(callback, resu){
+        videoByPost: ['check_token', 'check_post', function(callback, resu){
             if(!resu.check_post.tval){
                 return res.json({message: "Sorry, not a post"})
             }else{
