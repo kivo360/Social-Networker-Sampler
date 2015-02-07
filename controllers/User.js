@@ -74,7 +74,7 @@ exports.postRegister = function (req, res) {
                 function (user, callback) {
                     //console.log(user);
                     if(!user){
-                        callback(null, {message: "The User With The Number " + req.param('phone') + " Already Exist"}, true)
+                        return {message: "The User With The Number " + req.param('phone') + " Already Exist"};
                     }
                     gremtool.create(user, function (err, use) {
                         callback(null, use, false);

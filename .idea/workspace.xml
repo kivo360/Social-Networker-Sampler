@@ -29,11 +29,11 @@
       <file leaf-file-name="User.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/controllers/User.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1482" max-vertical-offset="6734">
-              <caret line="111" column="19" selection-start-line="111" selection-start-column="8" selection-end-line="111" selection-end-column="19" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="624" max-vertical-offset="6734">
+              <caret line="75" column="30" selection-start-line="75" selection-start-column="30" selection-end-line="75" selection-end-column="30" />
               <folding>
-                <element signature="e#11379#11541#0" expanded="false" />
-                <element signature="e#11396#11470#0" expanded="false" />
+                <element signature="e#11365#11527#0" expanded="false" />
+                <element signature="e#11382#11456#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -42,8 +42,8 @@
       <file leaf-file-name="Videos.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/controllers/Videos.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="4.2838497" vertical-offset="0" max-vertical-offset="3627">
-              <caret line="305" column="39" selection-start-line="305" selection-start-column="39" selection-end-line="305" selection-end-column="39" />
+            <state vertical-scroll-proportion="0.5725938" vertical-offset="0" max-vertical-offset="3627">
+              <caret line="29" column="28" selection-start-line="29" selection-start-column="28" selection-end-line="29" selection-end-column="28" />
               <folding>
                 <element signature="e#1761#2142#0" expanded="false" />
                 <element signature="e#2855#3341#0" expanded="false" />
@@ -119,8 +119,8 @@
         <option value="$PROJECT_DIR$/general/token.js" />
         <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/controllers/Timeline.js" />
-        <option value="$PROJECT_DIR$/controllers/User.js" />
         <option value="$PROJECT_DIR$/controllers/Videos.js" />
+        <option value="$PROJECT_DIR$/controllers/User.js" />
       </list>
     </option>
   </component>
@@ -537,8 +537,8 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="3111">
           <caret line="5" column="26" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
           <folding>
-            <element signature="e#11379#11541#0" expanded="false" />
-            <element signature="e#11396#11470#0" expanded="false" />
+            <element signature="e#11365#11527#0" expanded="false" />
+            <element signature="e#11382#11456#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -921,19 +921,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/controllers/User.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1482" max-vertical-offset="6734">
-          <caret line="111" column="19" selection-start-line="111" selection-start-column="8" selection-end-line="111" selection-end-column="19" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="624" max-vertical-offset="6734">
+          <caret line="75" column="30" selection-start-line="75" selection-start-column="30" selection-end-line="75" selection-end-column="30" />
           <folding>
-            <element signature="e#11379#11541#0" expanded="false" />
-            <element signature="e#11396#11470#0" expanded="false" />
+            <element signature="e#11365#11527#0" expanded="false" />
+            <element signature="e#11382#11456#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/controllers/Videos.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="4.2838497" vertical-offset="0" max-vertical-offset="3627">
-          <caret line="305" column="39" selection-start-line="305" selection-start-column="39" selection-end-line="305" selection-end-column="39" />
+        <state vertical-scroll-proportion="0.5725938" vertical-offset="0" max-vertical-offset="3627">
+          <caret line="29" column="28" selection-start-line="29" selection-start-column="28" selection-end-line="29" selection-end-column="28" />
           <folding>
             <element signature="e#1761#2142#0" expanded="false" />
             <element signature="e#2855#3341#0" expanded="false" />
