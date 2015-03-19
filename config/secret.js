@@ -6,15 +6,15 @@ module.exports = {
         'graph': 'graph'
     },
     titan2: {
-        'host': '104.236.8.205',
+        'host': 'XXX.XXX.X.XXX',
         'port': 8182,
         'graph': 'graph'
     },
     titan3: {
-        'host': '10.132.119.251',
+        'host': 'XX.XXX.XXX.XXX',
         'port': 8182,
         'graph': 'prod'
     },
-    tokenSecret: 'TheQuickBrownTurdJumpedOverTheNothingAndSomeGuySteppedInShitFoRealziezTimes9000BITCHES'
+    tokenSecret: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
     //104.236.8.205
 };
