@@ -1,4 +1,7 @@
-# bubbr
-Video Based Social Network
-
-A social networking project that sadly is moving into the graveyard of stuff.
+# Social Network Sample
+A foundation for those that want to build a social network
+.
+If you want to build a new social network, this network can be used as a foundation. It has:
+*  Friending
+*  Media Creation (Video, Photos, etc)
+*  An amazing timeline function
